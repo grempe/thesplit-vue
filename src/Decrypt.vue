@@ -6,7 +6,7 @@
     <div class="columns" v-show="!secret">
         <div class="column col-3"></div>
         <div class="form-group column col-6">
-          <input id="inputUuid" v-model="uuid" type="text" class="form-input" placeholder="Secret UUID" autofocus></input>
+          <input id="inputId" v-model="id" type="text" class="form-input" placeholder="ID" autofocus></input>
         </div>
         <div class="column col-3"></div>
     </div>
@@ -14,26 +14,25 @@
     <div class="columns" v-show="!secret">
         <div class="column col-3"></div>
         <div class="form-group column col-6">
-          <input id="inputKey" v-model="boxKeyB32" type="text" class="form-input" placeholder="Base32 Secret Key"></input>
+          <input id="inputKey" v-model="boxKeyB32" type="text" class="form-input" placeholder="Secret Key"></input>
         </div>
         <div class="column col-3"></div>
     </div>
 
     <div class="columns" v-show="!secret">
-      <div class="column col-6"></div>
-      <div class="column col-1">
-        <a class="btn btn-link float-right" v-on:click="resetAll" :disabled="!hasUuidAndKey">reset</a>
-      </div>
+      <div class="column col-7"></div>
       <div class="column col-2">
-        <button class="btn btn-primary float-right" v-on:click="decryptSecret" :disabled="!hasUuidAndKey">Retrieve</button>
+        <button class="btn btn-primary float-right" v-on:click="decryptSecret" :disabled="!hasIdAndKey">Retrieve</button>
       </div>
       <div class="column col-3"></div>
     </div>
 
     <div class="columns" v-show="secret">
-      <div class="column col-12">
+      <div class="column col-2"></div>
+      <div class="column col-8">
         <pre>{{ secret }}</pre>
       </div>
+      <div class="column col-2"></div>
     </div>
 
   </div>
@@ -57,14 +56,14 @@ const baseUrl = 'http://localhost:9292'
 export default {
   data () {
     return {
-      uuid: this.$route.params.uuid,
+      id: this.$route.params.id,
       boxKeyB32: this.$route.params.key,
       secret: null
     }
   },
   computed: {
-    hasUuidAndKey: function () {
-      if (this.uuid && this.boxKeyB32) {
+    hasIdAndKey: function () {
+      if (this.id && this.boxKeyB32) {
         return true
       } else {
         return false
@@ -73,11 +72,11 @@ export default {
   },
   methods: {
     resetAll: function () {
-      this.uuid = null
+      this.id = null
       this.boxKeyB32 = null
     },
     decryptSecret: function () {
-      this.$http.get(baseUrl + '/secret/' + this.uuid).then((response) => {
+      this.$http.get(baseUrl + '/secret/' + this.id).then((response) => {
           let boxKey = nacl.util.decodeBase64(base32.decode(this.boxKeyB32))
           let box = nacl.util.decodeBase64(response.data.secret.boxB64)
           let boxNonce = nacl.util.decodeBase64(response.data.secret.boxNonceB64)

@@ -20,12 +20,12 @@ router.map({
         name: 'decrypt',
         component: Decrypt
     },
-    '/d/:uuid': {
-        name: 'decrypt-uuid',
+    '/d/:id': {
+        name: 'decrypt-id',
         component: Decrypt
     },
-    '/d/:uuid/:key': {
-        name: 'decrypt-uuid-key',
+    '/d/:id/:key': {
+        name: 'decrypt-id-key',
         component: Decrypt
     }
 })
@@ -39,3 +39,4 @@ router.redirect({
 })
 
 router.start(App, '#app')
+

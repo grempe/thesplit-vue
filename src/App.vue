@@ -4,7 +4,7 @@
       <div class="column col-12">
         <header class="text-center">
           <h3>zerotime</h3>
-          <em>end-to-end encrypted, zero-knowledge, secret sharing</em><br>
+          <em>end-to-end encrypted, zero-knowledge, 24 hour, secret sharing</em><br>
           <a v-link="{ path: '/e' }">create a secret</a>&nbsp;<a v-link="{ path: '/d' }">retrieve a secret</a>
         </header>
       </div>

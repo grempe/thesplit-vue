@@ -1,29 +1,31 @@
 <template>
   <div id="encrypt">
     <div class="columns" v-show="!submitted">
-        <div class="column col-3"></div>
-        <div class="form-group column col-6">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
           <textarea id="inputSecretText" v-model="secret" type="text" class="form-input" placeholder="We all have secrets. Send yours safely." rows="5" autofocus></textarea>
         </div>
-        <div class="column col-3"></div>
+        <div class="column col-1"></div>
     </div>
 
     <div class="columns" v-show="!submitted">
-      <div class="column col-7"></div>
+      <div class="column col-9"></div>
       <div class="column col-1">
         <a class="btn btn-link float-right" v-on:click="resetAll" :disabled="!secret">reset</a>
       </div>
       <div class="column col-1">
         <button class="btn btn-primary float-right" v-on:click="encryptSecret" :disabled="!secret">Save</button>
       </div>
-      <div class="column col-3"></div>
+      <div class="column col-1"></div>
     </div>
 
     <div class="columns" v-show="url">
-      <div class="column col-12">
-        <p class="text-center"><a v-link="{ name: 'decrypt-uuid-key', params: { uuid: uuid, key: boxKeyB32 }}">{{ url }}</a></p>
+      <div class="column col-1"></div>
+      <div class="column col-10">
+        <p class="text-center"><a v-link="{ name: 'decrypt-id-key', params: { id: id, key: boxKeyB32 }}">{{ url }}</a></p>
         <p class="text-center"><a class="btn btn-link" v-on:click="resetAll">share new</a><a href="{{ url }}" class="text-center">remove</a></p>
       </div>
+      <div class="column col-1"></div>
     </div>
   </div>
 </template>
@@ -51,7 +53,7 @@ export default {
       url: null,
       createdAt: null,
       expiresAt: null,
-      uuid: null,
+      id: null,
       boxKeyB32: null
     }
   },
@@ -69,7 +71,7 @@ export default {
       this.resetResponseData()
     },
     resetResponseData: function () {
-      this.uuid = null
+      this.id = null
       this.url = null
       this.createdAt = null
       this.expiresAt = null
@@ -94,9 +96,20 @@ export default {
 
       // Use BLAKE2s in HMAC keyed mode with a pepper to create
       // a verification HMAC to help verify the integrity of the
-      // data transferred to the server.
+      // data transferred to the server. Create a 16 Byte hash
+      // to keep the length down. This hash, in addition to being
+      // used for a non-security integrity check on the data, will
+      // also be used as the key under which it is stored. A hex
+      // representation of this HMAC will be embedded in the URL
+      // used to retrieve the secret. It should be infeasible to
+      // find encrypted secrets on the server by brute-force probes
+      // of a 16 Byte (128 bit) key against the server. A collision
+      // is not catastrophic though, since only encrypted data and
+      // nonce/salt values are stored on the server. The server
+      // can also use this value to check integrity of all incoming
+      // and outgoing data.
       let blake2HashKey = nacl.util.decodeUTF8('zerotime')
-      let h = new BLAKE2s(32, blake2HashKey)
+      let h = new BLAKE2s(16, blake2HashKey)
       h.update(nacl.util.decodeUTF8(scryptSaltB64))
       h.update(nacl.util.decodeUTF8(boxNonceB64))
       h.update(nacl.util.decodeUTF8(boxB64))
@@ -113,8 +126,8 @@ export default {
       this.$http.post(baseUrl + '/secret', data).then((response) => {
           console.log(response)
           this.secret = null
-          this.uuid = response.data.uuid
-          this.url = baseUrl + '/d/' + this.uuid + '/' + this.boxKeyB32
+          this.id = response.data.id
+          this.url = baseUrl + '/d/' + this.id + '/' + this.boxKeyB32
           this.createdAt = response.data.created_at
           this.expiresAt = response.data.expires_at
       }, (response) => {
