@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
+    "base32-crockford-browser": "^1.0.0",
     "blake2s-js": "^1.2.0",
+    "scryptsy": "^2.0.0",
     "tweetnacl": "^0.14.3",
     "tweetnacl-util": "^0.13.3",
     "vue": "^1.0.0",

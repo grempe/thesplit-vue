@@ -8,15 +8,24 @@ import Decrypt from './Decrypt.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
-Vue.http.options.emulateJSON = true
 
 var router = new VueRouter()
 
 router.map({
-    '/': {
+    '/e': {
+        name: 'encrypt',
         component: Encrypt
     },
     '/d': {
+        name: 'decrypt',
+        component: Decrypt
+    },
+    '/d/:uuid': {
+        name: 'decrypt-uuid',
+        component: Decrypt
+    },
+    '/d/:uuid/:key': {
+        name: 'decrypt-uuid-key',
         component: Decrypt
     }
 })
@@ -26,7 +35,7 @@ router.beforeEach(function () {
 })
 
 router.redirect({
-  '*': '/'
+  '*': '/e'
 })
 
 router.start(App, '#app')
