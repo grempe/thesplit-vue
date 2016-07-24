@@ -1,4 +1,4 @@
-# zerotime
+# thesplit.is
 
 > A Vue.js project
 

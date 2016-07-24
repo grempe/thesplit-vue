@@ -1,38 +1,69 @@
 <template>
   <div id="decrypt">
-    
-    <h5 class="text-center">Retrieve Secret</h5>
-    
+
     <div class="columns" v-show="!secret">
-        <div class="column col-3"></div>
-        <div class="form-group column col-6">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+          <h4>Decrypt a Secret</h4>
+          <p>If you came here following a link someone shared with you, and the ID and Secret Key below are filled in, you are all set to continue. If either of these values were shared separately, just paste them into the right location below to continue.</p>
+        </div>
+        <div class="column col-1"></div>
+    </div>
+        
+    <div class="columns" v-show="!secret">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+          <label class="form-label" for="inputId">ID</label>
           <input id="inputId" v-model="id" type="text" class="form-input" placeholder="ID" autofocus></input>
         </div>
-        <div class="column col-3"></div>
+        <div class="column col-1"></div>
     </div>
 
     <div class="columns" v-show="!secret">
-        <div class="column col-3"></div>
-        <div class="form-group column col-6">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+          <label class="form-label" for="inputKey">Secret Key</label>
           <input id="inputKey" v-model="boxKeyB32" type="text" class="form-input" placeholder="Secret Key"></input>
         </div>
-        <div class="column col-3"></div>
+        <div class="column col-1"></div>
     </div>
 
     <div class="columns" v-show="!secret">
-      <div class="column col-7"></div>
+      <div class="column col-9"></div>
       <div class="column col-2">
-        <button class="btn btn-primary float-right" v-on:click="decryptSecret" :disabled="!hasIdAndKey">Retrieve</button>
+        <button class="btn btn-primary float-right tooltip tooltip-left" data-tooltip="Retrieve and destroy the server data and decrypt" v-on:click="decryptSecret" :disabled="!hasIdAndKey">Decrypt!</button>
       </div>
-      <div class="column col-3"></div>
+      <div class="column col-1"></div>
     </div>
 
     <div class="columns" v-show="secret">
-      <div class="column col-2"></div>
-      <div class="column col-8">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+          <h4>Decrypted Secret</h4>
+        </div>
+        <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="secret">
+      <div class="column col-1"></div>
+      <div class="column col-10">
         <pre>{{ secret }}</pre>
       </div>
-      <div class="column col-2"></div>
+      <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="secret">
+      <div class="column col-1"></div>
+      <div class="column col-10">
+        <p class="silver">The encrypted secret shared with you has been decrypted, and is displayed above. It has already been deleted from the server and can never be retrieved again. If needed, copy the secret now.</pre>
+      </div>
+      <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="secret">
+      <div class="column col-12">
+        <button class="btn centered tooltip tooltip-top" data-tooltip="There is no going back on this!" v-on:click="resetAll">Destroy It!</button>
+      </div>
     </div>
 
   </div>
@@ -44,14 +75,13 @@ import naclutil from 'tweetnacl-util'
 nacl.util = naclutil
 import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
-
-// https://github.com/latentflip/base32-crockford-browser
 import base32 from 'base32-crockford-browser'
 
-// const baseUrl = location.protocol + '//' + location.host
-// const baseUrl = 'http://0.0.0.0:9292'
-const baseUrl = 'http://localhost:9292'
-// const baseUrl = 'https://zerotime.herokuapp.com'
+// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
+// const apiBaseUrl = 'http://0.0.0.0:9292/api/v1'
+// const apiBaseUrl = 'http://localhost:9292/api/v1'
+// const apiBaseUrl = 'http://localhost:3000/api/v1'
+const apiBaseUrl = 'https://thesplit.is/api/v1'
 
 export default {
   data () {
@@ -74,16 +104,18 @@ export default {
     resetAll: function () {
       this.id = null
       this.boxKeyB32 = null
+      this.secret = null
+      this.$dispatch('toast-clear', null)
     },
     decryptSecret: function () {
-      this.$http.get(baseUrl + '/secret/' + this.id).then((response) => {
+      this.$http.get(apiBaseUrl + '/secrets/' + this.id).then((response) => {
           let boxKey = nacl.util.decodeBase64(base32.decode(this.boxKeyB32))
-          let box = nacl.util.decodeBase64(response.data.secret.boxB64)
-          let boxNonce = nacl.util.decodeBase64(response.data.secret.boxNonceB64)
-          let scryptSalt = nacl.util.decodeBase64(response.data.secret.scryptSaltB64)
+          let box = nacl.util.decodeBase64(response.data.data.boxB64)
+          let boxNonce = nacl.util.decodeBase64(response.data.data.boxNonceB64)
+          let scryptSalt = nacl.util.decodeBase64(response.data.data.scryptSaltB64)
 
           // scrypt
-          let N = 16384        // 2^14 : The number of iterations. number (integer)
+          let N = 4096         // 2^12 : The number of iterations. number (integer)
           let r = 8            // Memory factor. number (integer)
           let p = 1            // Parallelization factor. number (integer)
           let keyLenBytes = 32 // The number of bytes to return. number (integer)
@@ -91,13 +123,18 @@ export default {
           let secret = nacl.util.encodeUTF8(nacl.secretbox.open(box, boxNonce, boxKeyScrypt))
 
           if (secret) {
+            this.$dispatch('toast-success', 'Secret retrieved and decrypted')
             this.secret = secret
           } else {
-            this.secret = null
+            this.$dispatch('toast-danger', 'Secret retrieved but decryption failed. Wrong key?')
           }
       }, (response) => {
           // error callback
-          console.log(response)
+          if (response.data && response.data.message) {
+            this.$dispatch('toast-danger', response.data.message)
+          } else {
+            this.$dispatch('toast-danger', 'Server Error')
+          }
       });
     }
   }

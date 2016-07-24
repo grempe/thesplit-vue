@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Encrypt from './Encrypt.vue'
 import Decrypt from './Decrypt.vue'
+import About from './About.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
@@ -12,6 +13,14 @@ Vue.use(VueResource);
 var router = new VueRouter()
 
 router.map({
+    '/about': {
+        name: 'about',
+        component: About
+    },
+    '/security': {
+        name: 'about',
+        component: About
+    },
     '/e': {
         name: 'encrypt',
         component: Encrypt
