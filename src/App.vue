@@ -33,6 +33,8 @@
       </div>
     </div>
 
+    <h5 class="orange text-center text-bold text-italic">ALPHA TESTING ONLY : DO NOT USE FOR SECURITY SENSITIVE INFO</h5>
+
     <router-view></router-view>
   </div>
 </template>
@@ -91,5 +93,8 @@ export default {
 }
 .silver {
   color: silver;
+}
+.orange {
+  color: orange;
 }
 </style>

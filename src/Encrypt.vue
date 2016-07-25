@@ -179,11 +179,8 @@ import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 import numeral from 'numeral'
 
-// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
-// const apiBaseUrl = 'http://0.0.0.0:9292/api/v1'
-// const apiBaseUrl = 'http://localhost:9292/api/v1'
+const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
 // const apiBaseUrl = 'http://localhost:3000/api/v1'
-const apiBaseUrl = 'https://thesplit.is/api/v1'
 
 
 export default {
