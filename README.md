@@ -1,18 +1,79 @@
-# thesplit.is
+# [thesplit.is](https://thesplit.is) - VUE.js Client
 
-> A Vue.js project
+The open-source, end-to-end encrypted, zero-knowledge, auto-expiring, cryptographically secure, secret sharing service.
 
-## Build Setup
+We all have secrets. Send yours safely.
 
-``` bash
-# install dependencies
+[https://thesplit.is](https://thesplit.is)
+
+## Run Your Own
+
+Trust issues? Want to run your own copy of this application on Heroku?
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/thesplit/thesplit)
+
+## Development
+
+Setup
+
+```
 npm install
+```
 
-# serve with hot reload at localhost:8080
+Run a local in-memory dev server
+
+```
 npm run dev
+```
 
-# build for production with minification
+Build a copy in `dist/`
+
+```
 npm run build
 ```
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Legal
+
+### Copyright
+
+```txt
+Copyright (c) 2016 Glenn Rempe All Rights Reserved.
+```
+
+### License
+
+![GNU Affero General Public License](http://www.gnu.org/graphics/agplv3-155x51.png)
+
+```txt
+
+thesplit - A client application for the secure sharing of secrets.
+Copyright (c) 2016  Glenn Rempe
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+```
+
+A copy of the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl.html)
+can be found in the [LICENSE.txt](https://github.com/thesplit/thesplit/blob/master/LICENSE.txt) file.
+
+### Contact
+
+```
+Glenn Rempe
+email : glenn@rempe.us
+twitter : @grempe
+```

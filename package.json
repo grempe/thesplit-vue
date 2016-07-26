@@ -2,6 +2,11 @@
   "name": "thesplit",
   "description": "end-to-end encrypted zero-knowledge secret sharing",
   "author": "Glenn Rempe <glenn@rempe.us>",
+  "license" : "AGPL-3.0",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/thesplit/thesplit-vue.git"
+  },
   "scripts": {
     "dev": "webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
