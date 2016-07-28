@@ -128,6 +128,22 @@ export default {
     },
     decryptSecret: function () {
       this.$http.get(apiBaseUrl + '/secrets/' + this.id).then((response) => {
+        // Verify data returned matches its HMAC, which is also the key
+        // used to retrieve it. This completes the circle for HMAC. It was
+        // used to calculate the ID, the data was sent to the server and
+        // stored under that ID, the recipient used that key to retrieve
+        // the data just now, and finally we can verify that what was
+        // returned is without doubt was was originally created from
+        // an integrity standpoint.
+        let blake2HashKey = nacl.util.decodeUTF8('secret:app:pepper')
+        let h = new BLAKE2s(16, blake2HashKey)
+        h.update(nacl.util.decodeUTF8(response.data.data.scryptSaltB64))
+        h.update(nacl.util.decodeUTF8(response.data.data.boxNonceB64))
+        h.update(nacl.util.decodeUTF8(response.data.data.boxB64))
+        let verificationBlake2s = h.hexDigest()
+
+        if (this.id === verificationBlake2s) {
+          // Restore all of the data to its raw Byte form
           let boxKey = nacl.util.decodeBase64(base32.decode(this.boxKeyB32))
           let box = nacl.util.decodeBase64(response.data.data.boxB64)
           let boxNonce = nacl.util.decodeBase64(response.data.data.boxNonceB64)
@@ -147,6 +163,9 @@ export default {
           } else {
             this.$dispatch('toast-danger', 'Secret retrieved but decryption failed. Wrong key?')
           }
+        } else {
+          this.$dispatch('toast-danger', "Sorry, the data retrieved didn't match the ID.")
+        }
       }, (response) => {
           // error callback
           if (response.data && response.data.message) {
