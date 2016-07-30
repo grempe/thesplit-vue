@@ -45,7 +45,7 @@
         <div class="column col-1"></div>
         <div class="form-group column col-10">
           <label class="form-label" for="inputKey">Secret Key</label>
-          <input id="inputKey" v-model="boxKeyB32" type="text" class="form-input" placeholder="Secret Key"></input>
+          <input id="inputKey" v-model="keyB32" type="text" class="form-input" placeholder="Secret Key"></input>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -106,13 +106,13 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      boxKeyB32: this.$route.params.key,
+      keyB32: this.$route.params.key,
       secret: null
     }
   },
   computed: {
     hasIdAndKey: function () {
-      if (this.id && this.boxKeyB32) {
+      if (this.id && this.keyB32) {
         return true
       } else {
         return false
@@ -122,49 +122,56 @@ export default {
   methods: {
     resetAll: function () {
       this.id = null
-      this.boxKeyB32 = null
+      this.keyB32 = null
       this.secret = null
       this.$dispatch('toast-clear', null)
     },
     decryptSecret: function () {
       this.$http.get(apiBaseUrl + '/secrets/' + this.id).then((response) => {
-        // Verify data returned matches its HMAC, which is also the key
-        // used to retrieve it. This completes the circle for HMAC. It was
-        // used to calculate the ID, the data was sent to the server and
-        // stored under that ID, the recipient used that key to retrieve
-        // the data just now, and finally we can verify that what was
-        // returned is without doubt was was originally created from
-        // an integrity standpoint.
-        let blake2HashKey = nacl.util.decodeUTF8('secret:app:pepper')
-        let h = new BLAKE2s(16, blake2HashKey)
-        h.update(nacl.util.decodeUTF8(response.data.data.scryptSaltB64))
-        h.update(nacl.util.decodeUTF8(response.data.data.boxNonceB64))
-        h.update(nacl.util.decodeUTF8(response.data.data.boxB64))
-        let verificationBlake2s = h.hexDigest()
+        // Get the Base64 response data
+        let scryptSaltB64 = response.data.data.scryptSaltB64
+        let boxNonceB64 = response.data.data.boxNonceB64
+        let boxB64 = response.data.data.boxB64
 
-        if (this.id === verificationBlake2s) {
-          // Restore all of the data to its raw Byte form
-          let boxKey = nacl.util.decodeBase64(base32.decode(this.boxKeyB32))
-          let box = nacl.util.decodeBase64(response.data.data.boxB64)
-          let boxNonce = nacl.util.decodeBase64(response.data.data.boxNonceB64)
-          let scryptSalt = nacl.util.decodeBase64(response.data.data.scryptSaltB64)
+        // Convert the Base64 response data back to Bytes 
+        let scryptSaltBytes = nacl.util.decodeBase64(scryptSaltB64)
+        let boxNonceBytes = nacl.util.decodeBase64(boxNonceB64)
+        let boxBytes = nacl.util.decodeBase64(boxB64)
 
-          // scrypt
-          let N = 4096         // 2^12 : The number of iterations. number (integer)
-          let r = 8            // Memory factor. number (integer)
-          let p = 1            // Parallelization factor. number (integer)
-          let keyLenBytes = 32 // The number of bytes to return. number (integer)
-          let boxKeyScrypt = scrypt(boxKey, scryptSalt, N, r, p, keyLenBytes)
-          let secret = nacl.util.encodeUTF8(nacl.secretbox.open(box, boxNonce, boxKeyScrypt))
+        // The Base32 encoded key that will be passed through Scrypt
+        // to derive keys for the NaCl SecretBox and HMAC
+        let keyBytes = nacl.util.decodeBase64(base32.decode(this.keyB32))
 
-          if (secret) {
+        // Derive NaCl Secret Box Key and HMAC Key with Scrypt
+        let N = 4096         // 2^12 : The number of iterations. number (integer)
+        let r = 8            // Memory factor. number (integer)
+        let p = 1            // Parallelization factor. number (integer)
+        let keyLenBytes = 64 // The number of bytes to return. number (integer)
+        let scryptBytes = scrypt(keyBytes, scryptSaltBytes, N, r, p, keyLenBytes)
+        let boxKeyKdfBytes = scryptBytes.slice(0, 32)
+        let hmacKeyKdfBytes = scryptBytes.slice(32, 64)
+
+        // Create the BLAKE2s HMAC used for authenticating the storage ID/HMAC
+        // against the payload actually retrieved
+        let h = new BLAKE2s(16, hmacKeyKdfBytes)
+        h.update(nacl.util.decodeUTF8(scryptSaltB64))
+        h.update(nacl.util.decodeUTF8(boxNonceB64))
+        h.update(nacl.util.decodeUTF8(boxB64))
+        let blake2sHash = h.hexDigest()
+
+        // FIXME : Constant Time Compare
+        if (blake2sHash === this.id) {
+          // Entire payload HMAC is OK, decrypt the secret box contents
+          let secretBytes = nacl.secretbox.open(boxBytes, boxNonceBytes, boxKeyKdfBytes)
+
+          if (secretBytes) {
             this.$dispatch('toast-success', 'Secret retrieved and decrypted')
-            this.secret = secret
+            this.secret = nacl.util.encodeUTF8(secretBytes)
           } else {
             this.$dispatch('toast-danger', 'Secret retrieved but decryption failed. Wrong key?')
           }
         } else {
-          this.$dispatch('toast-danger', "Sorry, the data retrieved didn't match the ID.")
+          this.$dispatch('toast-danger', "Sorry, the data retrieved didn't match the HMAC ID.")
         }
       }, (response) => {
           // error callback

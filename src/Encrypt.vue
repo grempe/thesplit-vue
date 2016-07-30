@@ -67,6 +67,16 @@
     <div class="columns" v-show="hasSecretIdAndKey">
         <div class="column col-1"></div>
         <div class="column col-10">
+          <h4>Metadata</h4>
+          <p>created at : {{ createdAt }}</p>
+          <p>expires at : {{ expiresAt }}</p>
+        </div>
+        <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="hasSecretIdAndKey">
+        <div class="column col-1"></div>
+        <div class="column col-10">
           <h5>link + id + key (recommended for most)</h5>
           <p>The link contains both the ID used to retrieve the encrypted secret, and the key to decrypt it. Easy for most.</p>
         </div>
@@ -87,7 +97,7 @@
     <div class="columns" v-show="hasSecretIdAndKey">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <p class="text-center"><a v-link="{ name: 'decrypt-id-key', params: { id: id, key: boxKeyB32 }}">right click to copy link</a></p>
+        <p class="text-center"><a v-link="{ name: 'decrypt-id-key', params: { id: id, key: keyB32 }}">right click to copy link</a></p>
       </div>
       <div class="column col-1"></div>
     </div>
@@ -213,7 +223,7 @@ export default {
       createdAt: null,
       expiresAt: null,
       id: null,
-      boxKeyB32: null
+      keyB32: null
     }
   },
   computed: {
@@ -241,7 +251,7 @@ export default {
       }
     },
     hasSecretIdAndKey: function () {
-      if (this.id && this.boxKeyB32) {
+      if (this.id && this.keyB32) {
         return true
       } else {
         return null
@@ -258,8 +268,8 @@ export default {
       }
     },
     secretBaseIdKeyUrl: function () {
-      if (this.secretBaseUrl && this.id && this.boxKeyB32) {
-        return this.secretBaseUrl + this.id + '/' + this.boxKeyB32
+      if (this.secretBaseUrl && this.id && this.keyB32) {
+        return this.secretBaseUrl + this.id + '/' + this.keyB32
       }
     },
     secretId: function () {
@@ -268,8 +278,8 @@ export default {
       }
     },
     secretKey: function () {
-      if (this.boxKeyB32) {
-        return this.boxKeyB32
+      if (this.keyB32) {
+        return this.keyB32
       }
     }
   },
@@ -298,53 +308,82 @@ export default {
       });
     },
     encryptSecret: function (event) {
+      // Generate one-time use secure random key/nonce/salt values
       let scryptSalt = nacl.randomBytes(32)
       let boxNonce = nacl.randomBytes(24)
-      let boxKey = nacl.randomBytes(32)
-      this.boxKeyB32 = base32.encode(nacl.util.encodeBase64(boxKey))
 
-      // scrypt
+      // The random key from which all keys are derived
+      let key = nacl.randomBytes(32)
+      
+      // Base 32 encode the random key to make it suitable for a URL
+      this.keyB32 = base32.encode(nacl.util.encodeBase64(key))
+
+      // Use Scrypt KDF to derive NaCl Secret Box Key and HMAC Key
       let N = 4096         // 2^12 : The number of iterations. number (integer)
       let r = 8            // Memory factor. number (integer)
       let p = 1            // Parallelization factor. number (integer)
-      let keyLenBytes = 32 // The number of bytes to return. number (integer)
-      let boxKeyScrypt = scrypt(boxKey, scryptSalt, N, r, p, keyLenBytes)
-      let box = nacl.secretbox(this.secretBytes, boxNonce, boxKeyScrypt)
+      let keyLenBytes = 64 // The number of bytes to return. number (integer)
+      let scryptBytes = scrypt(key, scryptSalt, N, r, p, keyLenBytes)
+      let boxKeyKdfBytes = scryptBytes.slice(0, 32)
+      let hmacKeyKdfBytes = scryptBytes.slice(32, 64)
 
+      // Encrypt the secret
+      let box = nacl.secretbox(this.secretBytes, boxNonce, boxKeyKdfBytes)
+
+      // Base64 encode the values that need to go to the server
       let scryptSaltB64 = nacl.util.encodeBase64(scryptSalt)
       let boxNonceB64 = nacl.util.encodeBase64(boxNonce)
       let boxB64 = nacl.util.encodeBase64(box)
 
-      // Use BLAKE2s in HMAC keyed mode with a pepper to create
-      // a verification HMAC to help verify the integrity of the
-      // data transferred to the server. Create a 16 Byte hash
-      // to keep the length down. This hash, in addition to being
-      // used for a non-security integrity check on the data, will
-      // also be used as the key under which it is stored. A hex
-      // representation of this HMAC will be embedded in the URL
-      // used to retrieve the secret. It should be infeasible to
-      // find encrypted secrets on the server by brute-force probes
-      // of a 16 Byte (128 bit) key against the server. A collision
-      // is not catastrophic though, since only encrypted data and
-      // nonce/salt values are stored on the server. The server
-      // can also use this value to check integrity of all incoming
-      // and outgoing data.
-      let blake2HashKey = nacl.util.decodeUTF8('secret:app:pepper')
-      let h = new BLAKE2s(16, blake2HashKey)
+      // Use BLAKE2s in HMAC keyed mode to verify the integrity of the
+      // data as it passes through the server to the recipient. The HMAC
+      // key is derived from the same random value used to derive the box
+      // key. The first 32 Bytes of Scrypt output are for the Box key, and
+      // the next 32 Bytes derived are used for the HMAC key. Since both
+      // the box key and the HMAC key are derived from the secret key, which
+      // is only known to the creator and the recipient, it allows for
+      // secure authentication that none of the bytes in the entire payload
+      // sent to the server have changed in transit to the recipient. This
+      // 16 Byte HMAC output is then also used as the handle for storing and
+      // retrieving the entire payload. This ties the location of the payload,
+      // and the HMAC of its contents, together strongly. Since the server
+      // never knows the HMAC key, it is unable to verify the payload against
+      // the HMAC ID. Only the recipient, who also knows the random value used
+      // to derive both box key and HMAC key can do so.
+      //
+      // A 16 Byte HMAC output was chosen since this value (in Hex) is used in
+      // the shared URL and we want to keep the length down.
+      //
+      // It should be infeasible to find encrypted secret on the server by
+      // brute-force probes of a 16 Byte (128 bit) key against the server.
+      // However, even if a the HMAC/ID of a stored payload were to be
+      // discovered, or the entire database were to be compromised,
+      // this should not be catastrophic since only an encrypted
+      // copy of the secret data and the associated nonce/salt values
+      // are stored on the server. Without the original random seed value
+      // used to derive the box key and HMAC it would be infeasible to
+      // unlock the contents of the secret.
+
+      // Create the BLAKE2s HMAC used for authentication and as a
+      // storage handle for the entire payload.
+      let h = new BLAKE2s(16, hmacKeyKdfBytes)
       h.update(nacl.util.decodeUTF8(scryptSaltB64))
       h.update(nacl.util.decodeUTF8(boxNonceB64))
       h.update(nacl.util.decodeUTF8(boxB64))
+      let blake2sHash = h.hexDigest()
 
+      // An object to submit the payload to the server
       var data = {}
       data.scryptSaltB64 = scryptSaltB64
       data.boxNonceB64 = boxNonceB64
       data.boxB64 = boxB64
-      data.blake2sHash = h.hexDigest()
+      data.blake2sHash = blake2sHash
 
       // trigger UI changes
       this.submitted = true
 
       this.$http.post(apiBaseUrl + '/secrets', data).then((response) => {
+          // server response
           this.secret = null
           this.id = response.data.data.id
           this.createdAt = response.data.data.createdAt
