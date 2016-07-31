@@ -182,7 +182,9 @@
           <p>HTTP Strict Transport Security
               (<a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security" target="_blank">HSTS</a>)
               is also used to ensure that all browser connections to the site are protected by forcing
-              HTTP connections to be redirected to their HTTPS equivalent.</p>
+              HTTP connections to be redirected to their HTTPS equivalent. The 'thesplit.is' domain has also been
+              submitted to the <a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">Chrome HSTS Pre-Load List</a> and is currently
+              pending hard-coding into the HSTS lists for Google Chrome and other browsers.</p>
         </div>
 
         <div class="column col-5">
