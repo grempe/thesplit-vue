@@ -26,6 +26,7 @@ import App from './App.vue'
 import Encrypt from './Encrypt.vue'
 import Decrypt from './Decrypt.vue'
 import About from './About.vue'
+import Security from './Security.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
@@ -38,8 +39,8 @@ router.map({
         component: About
     },
     '/security': {
-        name: 'about',
-        component: About
+        name: 'security',
+        component: Security
     },
     '/e': {
         name: 'encrypt',

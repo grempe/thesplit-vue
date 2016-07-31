@@ -24,14 +24,6 @@
   <div id="encrypt">
 
     <div class="columns" v-show="!submitted">
-        <div class="column col-1"></div>
-        <div class="column col-10">
-          <h4>Encrypt a Secret</h4>
-        </div>
-        <div class="column col-1"></div>
-    </div>
-
-    <div class="columns" v-show="!submitted">
       <div class="column col-1"></div>
       <div class="column col-10">
         <div><span class="label float-right">{{ secretQuotaString }}</span></div>
@@ -42,7 +34,7 @@
     <div class="columns" v-show="!submitted">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-          <textarea id="inputSecretText" v-model="secret" type="text" class="form-input" placeholder="We all have secrets. Send yours safely." rows="5" autofocus></textarea>
+          <textarea id="inputSecretText" v-model="secret" type="text" class="form-input" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -67,9 +59,7 @@
     <div class="columns" v-show="hasSecretIdAndKey">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h4>Metadata</h4>
-          <p>created at : {{ createdAt }}</p>
-          <p>expires at : {{ expiresAt }}</p>
+          <h5>Expires at {{ expiresAt }}</h5>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -214,7 +204,6 @@ import numeral from 'numeral'
 const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
 // const apiBaseUrl = 'http://localhost:3000/api/v1'
 
-
 export default {
   data () {
     return {
@@ -247,7 +236,7 @@ export default {
     },
     secretQuotaString: function () {
       if (this.secret) {
-        return numeral(this.secret.length).format(0.0) + ' characters : ' +  numeral(this.secretApproximateEncryptedBase64Length).format('0 b') + ' of ' + numeral(65536).format('0 b') + ' (' + numeral(this.secretPercentageOfAllowedLength).format('0.00%') + ') of encrypted quota length'
+        return numeral(this.secret.length).format(0.0) + ' : ' +  numeral(this.secretApproximateEncryptedBase64Length).format('0 b') + ' of ' + numeral(65536).format('0 b') + ' (' + numeral(this.secretPercentageOfAllowedLength).format('0.00%') + ')'
       }
     },
     hasSecretIdAndKey: function () {

@@ -26,8 +26,7 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-          <h4>About</h4>
-          <p>Learn more about this site, how it works, how secure it is, and the answers to frequently asked questions.</p>
+          <h4>Learn about this site, how it works, and get answers to your Frequently Asked Questions.</h4>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -45,7 +44,10 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Why did you build it?</h5>
-          <p></p>
+          <p>Because we all need a way to share secrets now and then and its important that
+              it be just as easy as sending the secret in an email. I've tried lots of similar
+              applications before, but none of them provided true end-to-end encryption which
+              is the security bar that must be met in this day and age.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -54,7 +56,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Is it secure? - Short Answer</h5>
-          <p>Yes.</p>
+          <p><a v-link="{ path: '/security' }">Yes. See our security page.</a></p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -64,8 +66,10 @@
         <div class="column col-10">
           <h5>Is it secure? - Longer Answer</h5>
           <p>Yes. This is an end-to-end, zero-knowledge, secret sharing system that
-              uses modern cryptography to secure your secrets. Secrets, the keys to
+              uses modern cryptography to secure your secrets. Secrets, and the keys to
               unlock them, never leave your local machine without being encrypted first.</p>
+
+          <p>See the <a v-link="{ path: '/security' }">security page</a> for more info.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -85,11 +89,10 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>How big can my secret be?</h5>
-          <p>Currently, the Base64 encrypted secret data can be up to 65,536 Bytes.
-              Base64 imposes about 33% overhead on your encrypted data so your secret
-              will have to be smaller than that in practice. NaCl only adds
-              about 16 Bytes to the size of your plain-text secret so the encryption
-              overhead is minimal when compared to the Base64 encoding.</p>
+          <p>Currently, the total Base64 encrypted secret data can be up to 65,536 bytes
+              in length. Base64 imposes about 33% overhead on your encrypted data so your secret
+              will have to be smaller than that in practice. Keep an eye on the meter when
+              you are entering your secret to get an idea of how big your secret can be.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -99,8 +102,9 @@
         <div class="column col-10">
           <h5>Can I share images or files?</h5>
           <p>Currently, only UTF-8 text can be shared. If you can encode your file to UTF-8
-              it can be shared, for example if you Base64 encode it a tar or zip file. Make
-              sure your recipient knows what to do with your encoded file.
+              it can be shared, for example if you Base64 encode a tar or zip file. Make
+              sure your recipient knows what to do with your encoded file since it won't
+              be automatically handled.
           </p>
         </div>
         <div class="column col-1"></div>
@@ -122,7 +126,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Do secrets expire?</h5>
-          <p>Yes, they encrypted data record currently expires exactly 30 days after
+          <p>Yes, they encrypted data record currently expires exactly 24 hours after
               creation. When the file expires it is automatically deleted.
           </p>
         </div>
@@ -134,11 +138,12 @@
         <div class="column col-10">
           <h5>What kind of cryptography is used to encrypt my secrets?</h5>
           <p>All shared secret data is encrypted using the
-              <a href="https://tweetnacl.js.org/#/">TweetNaCl.js</a> encryption library.
+              <a href="https://tweetnacl.js.org/#/" target="_blank">TweetNaCl.js</a> encryption library.
               More specifically the Secretbox (XSalsa20 stream cipher and Poly1305
               one-time authenticator) secret-key authenticated encryption construct
-              is used with a 24 Byte Nonce and a 32 Byte random key. This is
-              considered by experts to be state of the art encryption in 2016.</p>
+              is used with a 24 Byte Nonce and a 32 Byte random key which is derived with
+              the scrypt key derivation function. This is considered by many experts to be
+              state of the art encryption today.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -150,7 +155,7 @@
           <p>End-to-end encryption is the practice of encrypting your content locally
               so that no plain-text material ever leaves your local environment before
               it hits the Internet. Only the recipient, who knows your encryption key,
-              can decrypt the content also in her local environment.</p>
+              can decrypt the content in her local environment.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -170,28 +175,15 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h5>What is this 'ID' you keep mentioning?</h5>
-          <p>The ID is the unique identifier used to store your secret data in our database. Knowledge of
-              the ID is required to request a copy of the encrypted secret from our API. The ID is
-              actually a 16 Byte Base32 encoded (human and URL friendly) BLAKE2s HMAC with the HMAC key
-              being a 'pepper', or known value. With rate-limited API, and a 16 Byte (128 bit) ID it
-              is <a href="http://betterexplained.com/articles/the-quick-guide-to-guids/" target="_blank">generally
-              considered infeasible for someone to guess the ID</a> for any records in the DB.
-              Especially when you consider that ID's and their data expire. Even if it were possible
-              to guess, the attacker would only receive the encrypted data which
-              is useless without knowing the 32 Byte (256 bit) encryption key for that ciphertext
-              which is a *much* harder nut to crack.</p>
-        </div>
-        <div class="column col-1"></div>
-    </div>
-
-    <div class="columns">
-        <div class="column col-1"></div>
-        <div class="column col-10">
           <h5>Couldn't an attacker guess the ID and retrieve my encrypted secrets?</h5>
-          <p>If they could guess the ID, which is highly unlikely in a billion lifetimes,
-              they could retrieve your encrypted secret data and try to crack it. There are
-              <a href="https://www.xkcd.com/538/" target="_blank">much easier ways to get at your secrets</a>.</p>
+          <p>If they could guess the ID, which is highly unlikely before the sun burns out,
+              they could retrieve your encrypted secret data and try to crack it. It would be much easier
+              for an attacker to steal the whole database and all the encrypted secrets. However,
+              breaking any of the encrypted secrets in the DB is a task which
+              is considered extremely difficult, if not impossible, due to the use of a 32 Byte
+              random encryption key.</p>
+              
+              <p>There are <a href="https://www.xkcd.com/538/" target="_blank">much easier ways to get a hold of your encrypted secrets</a>.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -229,7 +221,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Couldn't an attacker who obtains a copy of the database of secrets brute-force guess the keys for those secrets in an offline attack?</h5>
-          <p><a href="http://crypto.stackexchange.com/questions/1145/how-much-would-it-cost-in-u-s-dollars-to-brute-force-a-256-bit-key-in-a-year">No.</a> Not unless they are aware of an exploit for the cryptography used. There are currently no such known exploits for NaCl SecretBox crypto.</p>
+          <p><a href="http://crypto.stackexchange.com/questions/1145/how-much-would-it-cost-in-u-s-dollars-to-brute-force-a-256-bit-key-in-a-year" target="_blank">No.</a> Not unless they are aware of an exploit for the cryptography used. There are currently no such known exploits for NaCl SecretBox crypto.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -238,7 +230,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Are my secrets protected in transit using SSL/TLS?</h5>
-          <p>Yes.</p>
+          <p><a v-link="{ path: '/security' }">Yes. See our security page.</a></p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -250,6 +242,8 @@
           <p>Yes, they are protected by strong encryption and strong random keys. The
               server never knows the value of the encryption key so it can't be
               compromised by someone with a copy of our secrets DB.</p>
+
+          <p>See our <a v-link="{ path: '/security' }">security page</a>.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -281,38 +275,10 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h5>What cryptographic libraries do you use on the client side?</h5>
-          <p>
-            <ul>
-              <li><a href="https://tweetnacl.js.org/#/" target="_blank">TweetNaCl.js</a></li>
-              <li><a href="https://github.com/dchest/blake2s-js" target="_blank">BLAKE2s</a></li>
-              <li><a href="https://github.com/cryptocoinjs/scryptsy" target="_blank">scryptsy</a></li>
-            </ul>
-          </p>
-        </div>
-        <div class="column col-1"></div>
-    </div>
-
-    <div class="columns">
-        <div class="column col-1"></div>
-        <div class="column col-10">
-          <h5>What cryptographic libraries do you use on the server side?</h5>
-            <ul>
-              <li><a href="https://github.com/cryptosphere/rbnacl" target="_blank">RbNaCl (Ruby + C libsodium)</a></li>
-              <li><a href="https://github.com/franckverrot/blake2" target="_blank">BLAKE2 (Ruby + C reference lib)</a></li>
-            </ul>
-          <p></p>
-        </div>
-        <div class="column col-1"></div>
-    </div>
-
-    <div class="columns">
-        <div class="column col-1"></div>
-        <div class="column col-10">
           <h5>Could an attacker compromise your logs and learn something?</h5>
-          <p>Currently there is minimal logging of requests to the server which
+          <p>Currently there is very minimal logging of requests to the server which
               includes the user agent and the IP address of the requestor. These logs
-              are currently kept for 7 days.</p>
+              are currently kept for 7 days before being automatically deleted.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -323,7 +289,7 @@
           <h5>Do you collect user data?</h5>
           <p>We do not collect or store any user data other than the data required to
               restore a secret. There are no usernames, passwords, IP addresses, or
-              other Personally Identifyable Information (PII) in the database.</p>
+              other Personally Identifyable Information (PII) in our database.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -332,7 +298,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Do you provide any user data to third-parties?</h5>
-          <p>No, we don't have any user data.</p>
+          <p>No. No personally identifiable user data is asked for or retained.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -340,8 +306,8 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h5>Do you use analytics services?</h5>
-          <p>No.</p>
+          <h5>Do you use third party analytics services?</h5>
+          <p>No. I don't believe the security and privacy compromise is worth the information provided.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -350,8 +316,8 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Do you store any aggregate statistical information about secrets shared?</h5>
-          <p>Yes. We currently store simple non-identifiable counters of things like total
-              secrets shared, total secrets retrieved, etc.</p>
+          <p>Yes. Currently, simple non-identifiable counters of things like total
+              secrets created and retrieved are stored.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -360,7 +326,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>What kind of database do you use to store my data?</h5>
-          <p>All data is currently stored in a Redis in-memory data store.</p>
+          <p>All data is currently stored in a Redis in-memory data store with explicit TTL's set on all secret data.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -369,12 +335,12 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>What data is stored in the database?</h5>
-          <p>Currently, only the following is stored in a data record for a secret:</p>
+          <p>Currently, only the following information is stored in the data record for a secret:</p>
           <ul>
             <li>Base64 encoded 32 Byte Scrypt salt</li>
             <li>Base64 encoded 24 Byte NaCl SecretBox Nonce</li>
             <li>Base64 encoded NaCl SecretBox Ciphertext</li>
-            <li>Base32 encoded 16 Byte BLAKE2s HMAC of the previous values, used as the ID</li>
+            <li>Base32 encoded 16 Byte BLAKE2s HMAC of the previous values, used as the ID. The HMAC key is derived from a random value using Scrypt.</li>
           </ul>
         </div>
         <div class="column col-1"></div>
@@ -384,10 +350,12 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>What could an attacker do with the data stored in the database?</h5>
-          <p>Not much. It is considered infeasible (see other answers here) to crack
-              the 32 Byte (256 bit) encryption keys on the data. However, they would be
-              able to guess the length of secrets that are stored. If this is a concern
-              you can always pad your secret with any data you choose.
+          <p>Likely, not much. It is considered infeasible to crack the 32 Byte (256 bit)
+              random encryption keys, which have been stretched with Scrypt, or the
+              defeat the encryption. However, an attacker would be able to determine the
+              length of secrets that are stored. If this is a concern you can pad your
+              secret with zeros to acheive the length you desire. The salt and nonce values
+              can be made public and are not of much help without the encryption key.
           </p>
         </div>
         <div class="column col-1"></div>
@@ -397,11 +365,12 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Could an attacker change the contents of my secret?</h5>
-          <p>No, not unless they can also change the code that runs the site. The contents of your
-              secret, along with the other data we store, are hashed using BLAKE2s HMACs before the client
-              submits it. The hash of that data is also the ID used to retrieve your encrypted data. This
-              HMAC is verified to is verified on submission to the API, on retrieval from the API, and
-              again by the client before it is decrypted.</p>
+          <p>No, probably not. The contents of your secret, along with the other data stored,
+              are hashed with a BLAKE2s HMACs and a Scrypt stretched secret key before the client
+              submits it. The HMAC is also the ID used to retrieve your encrypted data. This
+              HMAC is verified again by the client before any decryption operation is attempted.
+              The NaCl authenticated encryption system used also prevents modification of the
+              encrypted cyphertext without detection and failure.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -410,7 +379,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Can I review the source code for security flaws?</h5>
-          <p>Yes. See <a href="https://github.com/thesplit">github.com/thesplit</a></p>
+          <p>Yes. See <a href="https://github.com/thesplit" target="_blank">github.com/thesplit</a></p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -420,6 +389,8 @@
         <div class="column col-10">
           <h5>Can I run my own copy of this application for personal use?</h5>
           <p>Yes, for non-commercial personal use, when offered free of charge and in accordance with the terms of the license.</p>
+          <p>See <a href="https://github.com/thesplit/thesplit" target="_blank">github.com/thesplit/thesplit</a> for instructions.</p>
+
         </div>
         <div class="column col-1"></div>
     </div>
@@ -428,7 +399,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>Can I run my own copy of this application for commercial use?</h5>
-          <p>Please contact us for licensing information and pricing for commercial use.</p>
+          <p>Please contact me for licensing information and pricing for commercial use.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -437,7 +408,7 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>I think I found a bug, how do I report it?</h5>
-          <p>We welcome your <a href="https://github.com/thesplit/thesplit-vue/issues">bug report</a>.</p>
+          <p>We welcome your <a href="https://github.com/thesplit/thesplit-vue/issues" target="_blank">bug report</a>.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -445,8 +416,8 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h5>I think I found a security defect, how do I report it?</h5>
-          <p>You can <a href="https://www.rempe.us/contact/">send an encrypted security report</a>.</p>
+          <h5>I think I found a security bug, how do I report it?</h5>
+          <p>Send a PGP encrypted email, encrypted with the key ID 0xA4A288A3BECCAE17. Read more about contacting me securely <a href="https://www.rempe.us/keys/" target="_blank">here</a>.</p>
         </div>
         <div class="column col-1"></div>
     </div>

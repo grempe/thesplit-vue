@@ -30,7 +30,8 @@
              <a v-link="{ path: '/e' }" class="navbar-brand">thesplit.is</a><br>
           </section>
           <section class="navbar-section">
-              <a v-link="{ path: '/d' }" class="btn btn-link">decrypt a secret</a>
+              <a v-link="{ path: '/d' }" class="btn btn-link">decrypt</a>
+              <a v-link="{ path: '/security' }" class="btn btn-link">security</a>
               <a v-link="{ path: '/about' }" class="btn btn-link">about</a>
           </section>
         </header>
@@ -55,7 +56,7 @@
       </div>
     </div>
 
-    <h5 class="orange text-center text-bold text-italic">ALPHA TESTING ONLY : DO NOT USE FOR SECURITY SENSITIVE INFO</h5>
+    <h5 class="orange text-center text-bold text-italic">ALPHA TEST : DO NOT USE FOR SECURITY SENSITIVE INFO YET</h5>
 
     <router-view></router-view>
   </div>
