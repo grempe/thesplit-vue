@@ -177,7 +177,8 @@
         <div class="column col-5">
           <h4>HTTPS (TLS) Everywhere</h4>
           <p>This site is protected by a TLS/SSL certificate and has been awarded
-              an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">A+ rating from SSLLABS.com</a>.              
+              an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">A+ rating from SSLLABS.com</a>
+              and an <a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank">A rating from securityheaders.io</a>.              
           </p>
           <p>HTTP Strict Transport Security
               (<a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security" target="_blank">HSTS</a>)

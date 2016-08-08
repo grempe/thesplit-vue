@@ -366,7 +366,7 @@ export default {
       data.scryptSaltB64 = scryptSaltB64
       data.boxNonceB64 = boxNonceB64
       data.boxB64 = boxB64
-      data.blake2sHash = blake2sHash
+      data.id = blake2sHash
 
       // trigger UI changes
       this.submitted = true
