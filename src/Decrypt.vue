@@ -159,8 +159,8 @@ export default {
         h.update(nacl.util.decodeUTF8(boxB64))
         let blake2sHash = h.hexDigest()
 
-        // FIXME : Constant Time Compare
-        if (blake2sHash === this.id) {
+        // secure constant-time compare
+        if (nacl.verify(nacl.util.decodeUTF8(blake2sHash), nacl.util.decodeUTF8(this.id))) {
           // Entire payload HMAC is OK, decrypt the secret box contents
           let secretBytes = nacl.secretbox.open(boxBytes, boxNonceBytes, boxKeyKdfBytes)
 
