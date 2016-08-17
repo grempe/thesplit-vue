@@ -22,13 +22,13 @@ import Vue from 'vue'
 import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
 
-import App from './App.vue'
-import Encrypt from './Encrypt.vue'
-import Decrypt from './Decrypt.vue'
-import Verify from './Verify.vue'
-import About from './About.vue'
-import Security from './Security.vue'
-import Debug from './Debug.vue'
+import App from './components/App.vue'
+import Encrypt from './components/Encrypt.vue'
+import Decrypt from './components/Decrypt.vue'
+import Verify from './components/Verify.vue'
+import About from './components/About.vue'
+import Security from './components/Security.vue'
+import Debug from './components/Debug.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);

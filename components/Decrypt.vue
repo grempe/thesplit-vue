@@ -100,8 +100,8 @@ import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 
-import * as actions from './vuex/actions'
-import * as getters from './vuex/getters'
+import * as actions from '../vuex/actions'
+import * as getters from '../vuex/getters'
 
 export default {
   data () {

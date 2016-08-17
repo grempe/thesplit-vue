@@ -202,8 +202,8 @@ import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 import numeral from 'numeral'
 
-import * as actions from './vuex/actions'
-import * as getters from './vuex/getters'
+import * as actions from '../vuex/actions'
+import * as getters from '../vuex/getters'
 
 export default {
   data () {
