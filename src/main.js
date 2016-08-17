@@ -25,6 +25,7 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Encrypt from './Encrypt.vue'
 import Decrypt from './Decrypt.vue'
+import Verify from './Verify.vue'
 import About from './About.vue'
 import Security from './Security.vue'
 
@@ -57,7 +58,15 @@ router.map({
     '/d/:id/:key': {
         name: 'decrypt-id-key',
         component: Decrypt
-    }
+    },
+    '/v': {
+        name: 'verify',
+        component: Verify
+    },
+    '/v/:id': {
+        name: 'verify-id',
+        component: Verify
+    },
 })
 
 router.beforeEach(function () {
@@ -69,4 +78,3 @@ router.redirect({
 })
 
 router.start(App, '#app')
-

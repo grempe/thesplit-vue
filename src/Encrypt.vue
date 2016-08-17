@@ -196,13 +196,14 @@
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util'
 nacl.util = naclutil
+import sha256 from "fast-sha256";
 import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 import numeral from 'numeral'
 
-const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
-// const apiBaseUrl = 'http://localhost:3000/api/v1'
+// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
+const apiBaseUrl = 'http://localhost:3000/api/v1'
 
 export default {
   data () {
@@ -360,6 +361,9 @@ export default {
       h.update(nacl.util.decodeUTF8(boxNonceB64))
       h.update(nacl.util.decodeUTF8(boxB64))
       let blake2sHash = h.hexDigest()
+
+// let u = nacl.util.decodeUTF8('8e5c4ad7b257b845a77d3e076dfad5c3')
+// console.log(sha256.hash(u))
 
       // An object to submit the payload to the server
       var data = {}

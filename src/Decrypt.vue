@@ -53,7 +53,7 @@
     <div class="columns" v-show="!secret">
       <div class="column col-9"></div>
       <div class="column col-2">
-        <button class="btn btn-primary float-right tooltip tooltip-left" data-tooltip="Retrieve and destroy the server data and decrypt" v-on:click="decryptSecret" :disabled="!hasIdAndKey">Decrypt!</button>
+        <button class="btn btn-primary float-right tooltip tooltip-left" data-tooltip="Retrieve and destroy the server data and decrypt" v-on:click="decryptSecret" :disabled="!hasIdAndKey">Decrypt</button>
       </div>
       <div class="column col-1"></div>
     </div>
@@ -95,12 +95,13 @@
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util'
 nacl.util = naclutil
+import * as sha256 from "fast-sha256";
 import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 
-const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
-// const apiBaseUrl = 'http://localhost:3000/api/v1'
+// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
+const apiBaseUrl = 'http://localhost:3000/api/v1'
 
 export default {
   data () {
@@ -138,8 +139,9 @@ export default {
         let boxNonceBytes = nacl.util.decodeBase64(boxNonceB64)
         let boxBytes = nacl.util.decodeBase64(boxB64)
 
-        // The Base32 encoded key that will be passed through Scrypt
-        // to derive keys for the NaCl SecretBox and HMAC
+        // Decode the Base32 encoded key back to bytes. It will be passed
+        // through Scrypt to derive two 32 Byte keys for the NaCl
+        // SecretBox and BLAKE2s HMAC
         let keyBytes = nacl.util.decodeBase64(base32.decode(this.keyB32))
 
         // Derive NaCl Secret Box Key and HMAC Key with Scrypt
