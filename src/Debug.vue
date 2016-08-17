@@ -26,7 +26,7 @@
     <div class="columns" v-show="!foo">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-          <h4>Debug Settings</h4>
+          <h4>Debug</h4>
           <p>You probably don't want to play here. Things might explode if you do.</p>
         </div>
         <div class="column col-1"></div>
@@ -35,19 +35,19 @@
     <div class="columns" v-show="!foo">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-            <p>apiBaseUrl : {{ apiBaseUrl }} </p>
-            <button @click='useDevApi'>Use Dev API</button>
-            <button @click='useProdApi'>Use Prod API</button>
+            <p>getApiBaseUrl : {{ getApiBaseUrl }} </p>
+            <button @click='useDevApiUrl'>Use Dev API</button>
+            <button @click='useProdApiUrl'>Use Prod API</button>
         </div>
         <div class="column col-1"></div>
     </div>
-    
+
   </div>
 </template>
 
 <script>
-import { getApiBaseUrl } from './vuex/getters'
-import { useDevApiUrl, useProdApiUrl } from './vuex/actions'
+import * as actions from './vuex/actions'
+import * as getters from './vuex/getters'
 
 export default {
   data () {
@@ -55,13 +55,8 @@ export default {
     }
   },
   vuex: {
-    actions: {
-      useDevApi: useDevApiUrl,
-      useProdApi: useProdApiUrl
-    },
-    getters: {
-      apiBaseUrl: getApiBaseUrl
-    }
+    getters,
+    actions
   }
 }
 </script>

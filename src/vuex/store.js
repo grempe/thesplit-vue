@@ -11,7 +11,8 @@ const state = {
   }
 }
 
-// Create an object storing various mutations.
+// Create an object storing various mutations. mutation
+// handler functions must be Synchronous! e.g. No API calls.
 const mutations = {
   // A mutation receives the current state as the first argument
   // You can make any modifications you want inside this function

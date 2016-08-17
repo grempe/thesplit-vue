@@ -202,7 +202,8 @@ import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 import numeral from 'numeral'
 
-import { getApiBaseUrl } from './vuex/getters'
+import * as actions from './vuex/actions'
+import * as getters from './vuex/getters'
 
 export default {
   data () {
@@ -216,9 +217,8 @@ export default {
     }
   },
   vuex: {
-    getters: {
-      apiBaseUrl: getApiBaseUrl
-    }
+    getters,
+    actions
   },
   computed: {
     secretBytes: function () {
@@ -288,7 +288,7 @@ export default {
     },
     removeSecret: function () {
       // removing a secret is simply a matter of retrieving it once.
-      this.$http.delete(this.apiBaseUrl + '/secrets/' + this.id).then((response) => {
+      this.$http.delete(this.getApiBaseUrl + '/secrets/' + this.id).then((response) => {
         this.resetAll()
         this.$dispatch('toast-success', 'Server secret destroyed')
       }, (response) => {
@@ -376,7 +376,7 @@ export default {
       // trigger UI changes
       this.submitted = true
 
-      this.$http.post(this.apiBaseUrl + '/secrets', data).then((response) => {
+      this.$http.post(this.getApiBaseUrl + '/secrets', data).then((response) => {
           // server response
           this.secret = null
           this.id = response.data.data.id

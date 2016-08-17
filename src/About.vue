@@ -26,7 +26,7 @@
     <div class="columns">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-          <h4>Learn about this site, how it works, and get answers to your Frequently Asked Questions.</h4>
+          <h4>Frequently Asked Questions.</h4>
         </div>
         <div class="column col-1"></div>
     </div>

@@ -32,9 +32,9 @@
               Byte for byte, so seriously.</p>
           <p>Your sensitive data is passed through a series of cryptographic
               integrity checks, both when uploaded by you and when downloaded
-              by your recipient. We even anchor your data to the blockchain to
-              allow an integrity audit without fear of revealing any sensitive
-              information in the process.</p>
+              by your recipient. We even anchor a hash of your encrypted data
+              to the blockchain to allow an integrity audit without fear of
+              revealing any sensitive information.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -60,7 +60,8 @@
 </template>
 
 <script>
-import { getApiBaseUrl } from './vuex/getters'
+import * as actions from './vuex/actions'
+import * as getters from './vuex/getters'
 
 export default {
   data () {
@@ -69,10 +70,9 @@ export default {
     }
   },
   vuex: {
-    getters: {
-      apiBaseUrl: getApiBaseUrl
-    }
-  }
+    getters,
+    actions
+  },
 }
 </script>
 
