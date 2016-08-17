@@ -100,8 +100,7 @@ import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 
-// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
-const apiBaseUrl = 'http://localhost:3000/api/v1'
+import { getApiBaseUrl } from './vuex/getters'
 
 export default {
   data () {
@@ -109,6 +108,11 @@ export default {
       id: this.$route.params.id,
       keyB32: this.$route.params.key,
       secret: null
+    }
+  },
+  vuex: {
+    getters: {
+      apiBaseUrl: getApiBaseUrl
     }
   },
   computed: {
@@ -128,7 +132,7 @@ export default {
       this.$dispatch('toast-clear', null)
     },
     decryptSecret: function () {
-      this.$http.get(apiBaseUrl + '/secrets/' + this.id).then((response) => {
+      this.$http.get(this.apiBaseUrl + '/secrets/' + this.id).then((response) => {
         // Get the Base64 response data
         let scryptSaltB64 = response.data.data.scryptSaltB64
         let boxNonceB64 = response.data.data.boxNonceB64

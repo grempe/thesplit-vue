@@ -202,8 +202,7 @@ import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
 import numeral from 'numeral'
 
-// const apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
-const apiBaseUrl = 'http://localhost:3000/api/v1'
+import { getApiBaseUrl } from './vuex/getters'
 
 export default {
   data () {
@@ -214,6 +213,11 @@ export default {
       expiresAt: null,
       id: null,
       keyB32: null
+    }
+  },
+  vuex: {
+    getters: {
+      apiBaseUrl: getApiBaseUrl
     }
   },
   computed: {
@@ -284,7 +288,7 @@ export default {
     },
     removeSecret: function () {
       // removing a secret is simply a matter of retrieving it once.
-      this.$http.delete(apiBaseUrl + '/secrets/' + this.id).then((response) => {
+      this.$http.delete(this.apiBaseUrl + '/secrets/' + this.id).then((response) => {
         this.resetAll()
         this.$dispatch('toast-success', 'Server secret destroyed')
       }, (response) => {
@@ -362,9 +366,6 @@ export default {
       h.update(nacl.util.decodeUTF8(boxB64))
       let blake2sHash = h.hexDigest()
 
-// let u = nacl.util.decodeUTF8('8e5c4ad7b257b845a77d3e076dfad5c3')
-// console.log(sha256.hash(u))
-
       // An object to submit the payload to the server
       var data = {}
       data.scryptSaltB64 = scryptSaltB64
@@ -375,7 +376,7 @@ export default {
       // trigger UI changes
       this.submitted = true
 
-      this.$http.post(apiBaseUrl + '/secrets', data).then((response) => {
+      this.$http.post(this.apiBaseUrl + '/secrets', data).then((response) => {
           // server response
           this.secret = null
           this.id = response.data.data.id

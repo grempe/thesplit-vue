@@ -21,54 +21,44 @@
 -->
 
 <template>
-  <div id="verify">
+  <div id="debug">
 
     <div class="columns" v-show="!foo">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-          <h4>Verify a Secret</h4>
-          <p>The integrity of your data is important. Very important. That's why
-              we take the job of ensuring you get back exactly what was put in,
-              Byte for byte, so seriously.</p>
-          <p>Your sensitive data is passed through a series of cryptographic
-              integrity checks, both when uploaded by you and when downloaded
-              by your recipient. We even anchor your data to the blockchain to
-              allow an integrity audit without fear of revealing any sensitive
-              information in the process.</p>
+          <h4>Debug Settings</h4>
+          <p>You probably don't want to play here. Things might explode if you do.</p>
+        </div>
+        <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="!foo">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+            <p>apiBaseUrl : {{ apiBaseUrl }} </p>
+            <button @click='useDevApi'>Use Dev API</button>
+            <button @click='useProdApi'>Use Prod API</button>
         </div>
         <div class="column col-1"></div>
     </div>
     
-    <div class="columns" v-show="!foo">
-      <div class="column col-1"></div>
-        <div class="form-group column col-10">
-          <label class="form-label" for="inputId">ID</label>
-          <input id="inputId" v-model="id" type="text" class="form-input" placeholder="ID" autofocus></input>
-        </div>
-      <div class="column col-1"></div>
-    </div>
-
-    <div class="columns" v-show="!foo">
-      <div class="column col-9"></div>
-      <div class="column col-2">
-        <button class="btn btn-primary float-right tooltip tooltip-left" data-tooltip="Cryptographically verify secret data integrity" v-on:click="verifyReceipt" :disabled="!hasIdAndKey">Verify</button>
-      </div>
-      <div class="column col-1"></div>
-    </div>
-
   </div>
 </template>
 
 <script>
 import { getApiBaseUrl } from './vuex/getters'
+import { useDevApiUrl, useProdApiUrl } from './vuex/actions'
 
 export default {
   data () {
     return {
-      id: this.$route.params.id
     }
   },
   vuex: {
+    actions: {
+      useDevApi: useDevApiUrl,
+      useProdApi: useProdApiUrl
+    },
     getters: {
       apiBaseUrl: getApiBaseUrl
     }

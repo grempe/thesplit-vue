@@ -64,6 +64,9 @@
 </template>
 
 <script>
+
+import store from './vuex/store'
+
 export default {
   data () {
     return {
@@ -102,7 +105,8 @@ export default {
         self.$dispatch('toast-clear', null)
       }, 5000)
     }
-  }
+  },
+  store: store // make this and all child components aware of the new store
 }
 </script>
 

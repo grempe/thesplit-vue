@@ -28,6 +28,7 @@ import Decrypt from './Decrypt.vue'
 import Verify from './Verify.vue'
 import About from './About.vue'
 import Security from './Security.vue'
+import Debug from './Debug.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
@@ -66,6 +67,10 @@ router.map({
     '/v/:id': {
         name: 'verify-id',
         component: Verify
+    },
+    '/debug': {
+        name: 'debug',
+        component: Debug
     },
 })
 
