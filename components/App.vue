@@ -34,6 +34,7 @@
               <a v-link="{ path: '/v' }" class="btn btn-link">Verify</a>
               <a v-link="{ path: '/security' }" class="btn btn-link">Security</a>
               <a v-link="{ path: '/about' }" class="btn btn-link">About</a>
+              <a v-link="{ path: '/debug' }" class="btn btn-link" v-if="settings.debug">Debug</a>
           </section>
         </header>
       </div>
@@ -67,12 +68,19 @@
 
 import store from '../vuex/store'
 
+import * as actions from '../vuex/actions'
+import * as getters from '../vuex/getters'
+
 export default {
   data () {
     return {
       toastDanger: null,
       toastSuccess: null
     }
+  },
+  vuex: {
+    getters,
+    actions
   },
   methods: {
     clearToastDanger: function () {

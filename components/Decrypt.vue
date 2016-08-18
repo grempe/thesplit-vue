@@ -132,7 +132,7 @@ export default {
       this.$dispatch('toast-clear', null)
     },
     decryptSecret: function () {
-      this.$http.get(this.getApiBaseUrl + '/secrets/' + this.id).then((response) => {
+      this.$http.get(this.settings.apiBaseUrl + '/secrets/' + this.id).then((response) => {
         // Get the Base64 response data
         let scryptSaltB64 = response.data.data.scryptSaltB64
         let boxNonceB64 = response.data.data.boxNonceB64

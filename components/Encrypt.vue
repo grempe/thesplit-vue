@@ -288,7 +288,7 @@ export default {
     },
     removeSecret: function () {
       // removing a secret is simply a matter of retrieving it once.
-      this.$http.delete(this.getApiBaseUrl + '/secrets/' + this.id).then((response) => {
+      this.$http.delete(this.settings.apiBaseUrl + '/secrets/' + this.id).then((response) => {
         this.resetAll()
         this.$dispatch('toast-success', 'Server secret destroyed')
       }, (response) => {
@@ -376,7 +376,7 @@ export default {
       // trigger UI changes
       this.submitted = true
 
-      this.$http.post(this.getApiBaseUrl + '/secrets', data).then((response) => {
+      this.$http.post(this.settings.apiBaseUrl + '/secrets', data).then((response) => {
           // server response
           this.secret = null
           this.id = response.data.data.id

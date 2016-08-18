@@ -35,9 +35,20 @@
     <div class="columns" v-show="!foo">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
-            <p>getApiBaseUrl : {{ getApiBaseUrl }} </p>
-            <button @click='useDevApiUrl'>Use Dev API</button>
-            <button @click='useProdApiUrl'>Use Prod API</button>
+            <p>state.settings.debug : {{ settings.debug }} </p>
+            <button @click='setDebugOn'>True</button>
+            <button @click='setDebugOff'>False</button>
+        </div>
+        <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="!foo">
+        <div class="column col-1"></div>
+        <div class="form-group column col-10">
+            <p>state.settings.apiBaseUrl : {{ settings.apiBaseUrl }} </p>
+            <button @click='setDevApi'>Use Dev API</button>
+            <button @click='setHostApi'>Use Own Host API</button>
+            <button @click='setProdApi'>Use Production API</button>
         </div>
         <div class="column col-1"></div>
     </div>
