@@ -30,6 +30,8 @@ import About from './components/About.vue'
 import Security from './components/Security.vue'
 import Debug from './components/Debug.vue'
 
+Vue.config.debug = process.env.NODE_ENV !== 'production'
+
 Vue.use(VueRouter)
 Vue.use(VueResource);
 

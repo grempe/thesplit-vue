@@ -25,6 +25,7 @@ const mutations = {
 // Combine the initial state and the mutations to create a Vuex store.
 // This store can be linked to our app.
 export default new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   state,
   mutations
 })
