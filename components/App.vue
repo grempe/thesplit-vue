@@ -61,6 +61,16 @@
     <h5 class="orange text-center text-bold text-italic">ALPHA TEST : DO NOT USE FOR SECURITY SENSITIVE INFO YET</h5>
 
     <router-view></router-view>
+
+    <div id="footer" class="text-center">
+      <br>
+      <div class="divider"></div>
+      <br>
+      <em class="silver">the end-to-end encrypted, zero-knowledge, auto-expiring, cryptographically secure, secret sharing service</em><br>
+      <br>
+      <p class="silver">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank">@grempe</a></p>
+    </div>
+
   </div>
 </template>
 
