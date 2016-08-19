@@ -35,7 +35,24 @@ Vue.config.debug = process.env.NODE_ENV !== 'production'
 Vue.use(VueRouter)
 Vue.use(VueResource);
 
-var router = new VueRouter()
+// setting : 'history: false'
+// http://router.vuejs.org/en/options.html
+//
+// Use hash-bang '#!' URL's. They are not as pretty
+// but without them a URL like /d/ID/KEY would pass
+// both the ID and the secret KEY to the server, only
+// for the server to redirect the request to /index.html
+// so the SPA can then parse the /d/ID/KEY out and make
+// use of it. So the server in this case receives a
+// copy of the ID and KEY, for even a brief moment,
+// and this could allow an attacker who has previously
+// stored a stolen copy of the DB to decrypt a secret
+// without the receipient knowing it had occurred.
+// By making use of the hash-bang, nothing after the #!
+// is ever sent to the server (unless the browser and
+// client machine has been compropmised. Doom!) and remains
+// in the client browser at all times.
+var router = new VueRouter({history: false})
 
 router.map({
   '/about': {
