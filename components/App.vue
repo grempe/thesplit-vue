@@ -27,10 +27,11 @@
       <div class="column">
         <header class="navbar bg-grey">
           <section class="navbar-section">
-             <a v-link="{ path: '/e' }" class="navbar-brand">theSPLIT.is</a><br>
+             <a v-link="{ path: '/e' }" class="navbar-brand">thesplit.is</a><br>
           </section>
           <section class="navbar-section">
-              <a v-link="{ path: '/d' }" class="btn btn-link">Decrypt</a>
+              <a v-link="{ path: '/e' }" class="btn btn-link">Send</a>
+              <a v-link="{ path: '/d' }" class="btn btn-link">Receive</a>
               <a v-link="{ path: '/v' }" class="btn btn-link">Verify</a>
               <a v-link="{ path: '/security' }" class="btn btn-link">Security</a>
               <a v-link="{ path: '/about' }" class="btn btn-link">About</a>
@@ -40,25 +41,18 @@
       </div>
     </div>
 
-    <div class="columns" v-if="toastSuccess">
-      <div class="column">
-        <div class="toast toast-success" v-on:click="clearToastSuccess">
-            <button class="btn btn-clear float-right" v-on:click="clearToastSuccess"></button>
-            {{ toastSuccess }}
+    <div class="columns">
+      <div class="column col-2"></div>
+      <div class="column col-8">
+        <div v-for="alert in alerts">
+          <div class="toast" v-bind:class="{ 'toast-primary': alert.type === 'primary', 'toast-success': alert.type === 'success', 'toast-danger': alert.type === 'danger' }" v-on:click="deleteAlert(alert)">
+              <button class="btn btn-clear float-right" v-on:click="deleteAlert(alert)"></button>
+              {{ alert.msg }}
+          </div>
         </div>
       </div>
+      <div class="column col-2"></div>
     </div>
-
-    <div class="columns" v-if="toastDanger">
-      <div class="column">
-        <div class="toast toast-danger" v-on:click="clearToastDanger">
-            <button class="btn btn-clear float-right" v-on:click="clearToastDanger"></button>
-            {{ toastDanger }}
-        </div>
-      </div>
-    </div>
-
-    <h5 class="orange text-center text-bold text-italic">ALPHA TEST : DO NOT USE FOR SECURITY SENSITIVE INFO YET</h5>
 
     <router-view></router-view>
 
@@ -66,7 +60,7 @@
       <br>
       <div class="divider"></div>
       <br>
-      <em class="silver">the end-to-end encrypted, zero-knowledge, auto-expiring, cryptographically secure, secret sharing service</em><br>
+      <em class="silver">the end-to-end encrypted, zero-knowledge, auto-expiring, one-time use, blockchain anchored, secret sharing service</em><br>
       <br>
       <p class="silver">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank">@grempe</a></p>
     </div>
@@ -75,54 +69,18 @@
 </template>
 
 <script>
-
 import store from '../vuex/store'
-
 import * as actions from '../vuex/actions'
 import * as getters from '../vuex/getters'
 
 export default {
   data () {
     return {
-      toastDanger: null,
-      toastSuccess: null
     }
   },
   vuex: {
     getters,
     actions
-  },
-  methods: {
-    clearToastDanger: function () {
-      this.toastDanger = null
-    },
-    clearToastSuccess: function () {
-      this.toastSuccess = null
-    },
-  },
-  // the `events` option simply calls `$on` for you
-  // when the instance is created
-  events: {
-    'toast-clear': function (msg) {
-      // `this` in event callbacks are automatically bound
-      // to the instance that registered it
-      this.toastSuccess = null
-      this.toastDanger = null
-    },
-    'toast-success': function (msg) {
-      this.toastSuccess = msg
-      var self = this
-      setTimeout(function(){
-        self.$dispatch('toast-clear', null)
-      }, 5000)
-    },
-    'toast-danger': function (msg) {
-      this.toastDanger = msg
-      var self = this
-      setTimeout(function(){
-        self.$dispatch('toast-clear', null)
-      }, 5000)
-    }
   },
   store: store // make this and all child components aware of the new store
 }
@@ -139,8 +97,5 @@ export default {
 }
 .silver {
   color: silver;
-}
-.orange {
-  color: orange;
 }
 </style>

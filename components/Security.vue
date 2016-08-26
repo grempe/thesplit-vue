@@ -30,7 +30,7 @@
           <h4>This security design of this application is guided by a single overarching
               principle; that the security and privacy of its users, and the information they
               want to share, is paramount. All other considerations are secondary. Here are
-              some of the key security goals.</h4>
+              some of the key security features.</h4>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -39,22 +39,22 @@
         <div class="column col-1"></div>
         
         <div class="column col-5">
-          <h4>End-To-End Encryption</h4>
+          <h4>End-To-End Encrypted</h4>
           <p>All user content is encrypted locally in the browser using before being
               transmitted to the server for sharing. All data is encrypted with
               <a href="http://tweetnacl.cr.yp.to/index.html" target="_blank">TweetNaCl</a>/
               <a href="http://nacl.cr.yp.to" target="_blank">NaCl</a> compatible
               Secret Key Authenticated Encryption (XSalsa20-Poly1305). Only the person who
-              created a secret, and their chosen recipient, ever has possession of the
-              secret keys needed to decrypt or authenticate it.</p>
+              creates a secret, and their chosen recipient, ever has possession of the
+              secret key material needed to decrypt or authenticate a secret.</p>
 
-          <p>A secure Random Number Generator (CSPRNG) generates 32 byte (256 bit)
-              one-time use random keys. This 32 byte key material is then stretched,
-              using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank">Scrypt Key Derivation Function (KDF)</a>,
-              to 64 Bytes. The first 32 Bytes of this stretched key is used as the symetric key
+          <p>A secure Random Number Generator (CSPRNG) generates an 8 byte
+              one-time use random key. This key material is then stretched to 64 bytes,
+              using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank">Scrypt Key Derivation Function (KDF)</a>.
+              The first 32 Bytes of this stretched key is used as the symmetric key
               for an NaCl Secret Box, while the second 32 Bytes is used as a BLAKE2s HMAC key to
               authenticate the entire server payload. The following security libraries are used
-              in the client.              
+              in the client.
           </p>
           <p>
             <ul>
@@ -67,24 +67,34 @@
 
         <div class="column col-5">
           <h4>Zero-Knowledge Server</h4>
-          <p>The server, even if fully compromised, cannot reveal secrets it never had.
-              Other secret sharing applications submit the user secret data itself to the server
-              and depend on the server to perform all encryption operations and return the
-              key materials and URL's needed for sharing. Even if the server does not retain this
-              sensitive information during normal operation, or takes measures to erase it from memory,
-              the fact is that it requires the user to trust that the server has not been
-              compromised. Whether compromised by criminals, law enforcement carrying out
-              surveillance under a legal court order, or a malicious server admin, it is still
-              possible. In these situations the user would have no way of knowing their data
-              was compromised.</p>
+          <p>The most important security principle for the server is that it cannot reveal secrets it
+              never had. Even if the server were to be fully compromised and publicly exposed, it can
+              only reveal fully encrypted material, secured with a 32 Byte (256 bit) key, which
+              will be of little use to an attacker who might only be able to learn the length of
+              the encrypted material.</p>
 
-           <p>We address this concern by assuming in our threat model that the server is
-              always compromised and cannot be trusted with secrets, or the keys needed
-              to unlock them. Only fully encrypted data, or nonces and salts that can safely
-              be made public, will ever be shared with the server by the client.
+              <p>Other secret sharing applications submit the plaintext secret data to the server
+              and depend on the server to perform all encryption operations, and only then return the
+              key materials and URL's needed for sharing. Even if the server claims it does not
+              retain any of this highly sensitive information during normal operation, or even if it
+              takes extraordinary measures to erase it from memory, disk, and swap space,
+              the fact of the matter is that it cannot un-see what it has seen. This security model
+              requires the person sharing sensitive information to trust that the server has not been
+              compromised by criminals, governments carrying out surveillance, or a malicious server
+              administrator. In these situations neither the sender nor the recipient can ever know
+              if their data has been compromised or not.</p>
+
+           <p>We address this concern by assuming the server is always compromised and can never
+               be trusted with secret keys or plaintext secrets. Only fully encrypted data, and the
+               nonces and salts that can safely be stored, will ever be shared with the server
+               by the client. The plaintext secret, and the encryption key used to secure it,
+               never leave the browser. Only an attack on your local browser or OS (e.g. keylogger)
+               would potentially expose your secrets. This is the closest to bulletproof way to
+               ensure no sensitive info ever leaves your browser unencrypted.
            </p>
 
-           <p>The server is implemented in Ruby and you can view the <a href="https://github.com/thesplit/thesplit" target="_blank">source code</a>.</p>
+           <p>The server component of this application is implemented in Ruby and you can view and audit
+               the <a href="https://github.com/thesplit/thesplit" target="_blank">source code</a>.</p>
         </div>
 
         <div class="column col-1"></div>
@@ -94,28 +104,43 @@
         <div class="column col-1"></div>
 
         <div class="column col-5">
-          <h4>Auto Expiring</h4>
-          <p>All secrets shared have an associated Time To Live (TTL). By default this is
-              24 hours. When the TTL has expired, the content is automatically, irrevocably,
-              and instantly, deleted. Don't ask us to get it back, we can't.            
+          <h4>Encrypted Vault Database with Auto Expiring Access Tokens</h4>
+          <p>All secret data is stored in a strongly encrypted
+              <a href="https://www.hashicorp.com/blog/vault.html" target="_blank">Hashicorp Vault Database</a>,
+              providing a strong second layer of encryption that wraps all of the client side encrypted
+              secret ciphertext again. The vault is fully encrypted at rest and locks when stopped.</p>
+
+              <p>The Vault is an AES encrypted data store that has extremely strong access controls and
+              can only be unsealed by three separate Shamir's Secret Sharing key shares which can
+              be held by three separate individuals. Each secret we store in the Vault is stored
+              under its own access control token that allows access to only data associated with that
+              token and nothing else. One token, even if revealed, cannot view the data of another.
+              All tokens have strict ACL policies and have finite TTL expiration times which is the
+              mechanism we use to enfore secret sharing one-time use and secret expiration.
+              When the token TTL has expired, all data associated with that token is
+              automatically, irrevocably, and instantly, destroyed. Token use-count restrictions
+              and expiration TTL's cannot be overridden once set.</p>
+              
+              <p>If its gone, don't ask us to try to get it back. We can't. Ever.</p>
           </p>
         </div>
 
         <div class="column col-5">
           <h4>One-Time Use</h4>
-          <p>All secrets shared can be accessed only once. This is strictly enforced. Once you retrieve
-              the encrypted data representing a secret it is immediately and irrevocably deleted from
-              our servers. If you have the ID for a secret, but enter the wrong encryption key even once
-              you will not be able to try again. This protects you in several ways. You can delete a secret
-              that was mistakenly posted by simply visiting it first, and if your recipient is unable to
-              access a secret that may be a good indication that someone else had access to your secret
-              URL and visited first. Always confirm with your recipient that they were able to access
-              the secret you sent. Of course this also protects you from unintended sharing of the
-              secret access URL since only one person can access it.</p>
+          <p>All secret ciphertext can be downloaded only once. This is strictly enforced by Vault.
+              Once you retrieve the encrypted data representing a secret its access token is
+              immediately and irrevocably revoked and all associated secret data is automatically
+              destroyed instantly. One-time use protects you in several ways. You can delete a secret
+              that was mistakenly posted by simply visiting it first. If your recipient is unable to
+              access a secret that may be an indication that someone else had access to your secret
+              URL and visited it first. Always confirm with your recipient that they were able to access
+              the secret. Of course this also protects you from unintended subsequent sharing of the
+              secret access URL as anyone who gets the URL later can retrieve nothing.</p>
 
-          <p>This can also be used to your advantage when sharing something with limited availablity
-             like a beta invite. You can post it on Twitter and you and anyone else who tries it
-             will know that only one person can get the secret code.
+          <p>This feature can also enable interesting use-cases. For example, if you want to share
+              something publicly (like a beta invite code, that you only have one of),
+              you can simply post the secret share URL on Twitter and be certain that one, and
+              only one, person will get the code.
           </p>
         </div>
 
@@ -132,40 +157,59 @@
               The NaCl encryption we use provides authenticated encryption, ensuring
               that the contents of the encrypted secret itself are unchanged. We also wanted
               to provide cryptographic authentication that the entire data payload, including
-              the cyphertext of the secret, are shared with the server in such a way that we can
-              cryptographically authenticate that payload has not had even a single byte changed.               
+              the ciphertext of the secret, the scrypt salt, and secret box nonce, are
+              shared with the server in such a way that we can cryptographically authenticate
+              that the payload has not had even a single byte changed.               
           </p>
-          <p>We tackle this using an HMAC over the data payload. A 16 byte BLAKE2s HMAC is calculated
-              over the payload using a 32 byte secret key. The secret key is derived from the same
+          <p>We tackle this using an HMAC over the data payload. A 10 byte BLAKE2s HMAC is calculated
+              over the payload using a 32 byte secret HMAC key. The secret key is derived from the same
               random data that the NaCl encryption key is derived from using Scrypt. This ensures
               that only the creator, and the recipient of a URL containing the key, can cryptographically
-              authenticate the payload.
+              derive the key needed to authenticate the payload.
           </p>
-          <p>Here is where it gets interesting, the ID that is used in the URL to retrieve the secret
-              is actually the same HMAC value! This means that when your recipient receives the payload
-              from a given ID/HMAC only she can authenticate it against that same HMAC. So it should
-              not be possible to alter the content of the payload on the server without detection since
-              even the slightest change would result in a failed HMAC authentication.
-
+          <p>Here is where it gets interesting, we use this HMAC value as the ID that is used in the
+              URL to identify and retrieve a shared secret. This means that when your recipient
+              receives the payload for a given ID/HMAC it can be verified locally. Since the HMAC
+              is embedded in the URL you use to retrieve the secret it is also not possible to
+              tamper with the payload without discovery. Even the slightest change would result
+              in a failed HMAC authentication. These HMAC checks are performed every time a secret
+              is retrieved and if they fail no secret will be returned. It is better to fail completely
+              than to return potentially bad results. Of course NaCl also provides its own authentication
+              so we have defense in depth for the integrity of your data.
           </p>
         </div>
 
         <div class="column col-5">
-          <h4>Offshore .IS Domain</h4>
-          <p>This site is served from a '.is' domain, which is the Top Level Domain
-              for Iceland. That domain is registered with an Iceland based provider.
-              Iceland provides an environment that offers some of the
-              <a href="https://freedomhouse.org/report/freedom-net/2015/iceland">strongest protections</a>
-              for free speach and against surveillance and government interference in the world.
+          <h4>Blockchain Anchored</h4>
+          <p>Every secret that is shared has a unique ID value which, as is explained in greater detail
+              on this page, ensures that the data is unchanged. We take some additional steps to protect
+              your data and allow for verifiable data integrity by anchoring every secret to a Merkle Tree
+              proof, the root of which is anchored to the Bitcoin Blockchain.
           </p>
-          <p>At the moment, only the domain is registered in Iceland, but with sufficient funding
-              we hope to move all content hosting there as well which would put the site and its
-              content beyond the reach of some of the most repressive regimes in the world.
-          </p>
-          <p>The thesplit.is domain has also been <a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">fully secured with DNSSEC</a>.
-          <a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions" target="_blank">DNSSEC</a>, the DNS Security Extensions,
-          uses cryptographic signatures to provide authentication of DNS data and prevent malicious
-          manipulation of DNS results.</p>
+
+          <p>When you submit your encrypted secret payload to our servers, we actually store it under
+              a unique ID which is the SHA256 hash of the HMAC ID. This small step is taken to prevent
+              the server from retaining information about the ID that you will use to share your secret.
+              This also prevents an adversary who gains knowledge of the list of secret ID's stored
+              on the server from being able to reverse that ID and perform, for example, a global search
+              of the public Twitter stream or the GMail data store, to identify the sender or
+              recipient of that particular ID. We call this the 'server ID'.</p>
+
+            <p>Then we hash the 'server ID' one more time with SHA256 and send that value to be stored
+                on the Bitcoin Blockchain using the <a href="https://tierion.com/" target="_blank">Tierion Proof Engine</a>.
+                We then store receipts which contain the Merkle Proof data needed to verify that a secret
+                has in fact been stored on the Blockchain, in a certain OP_RETURN transaction, at a certain provable
+                time. We even collaborated with the Tierion team and wrote the official
+                <a href="https://github.com/grempe/tierion" target="_blank">Tierion Ruby Gem</a> to allow
+                easy submission and verification of anchors.
+            </p>
+
+            <p>This may seem extreme, but it allows a sender, and their recipient, to verify with
+                absolute certainty that the data integrity of their shared data is assured and
+                that it can be proven that a secret was sent at a certain time in a way that is
+                absolutely immutable. This technique is also safe in that it is impossible to reveal
+                any information about the original secret by examining the SHA256 hash chain.
+            </p>
         </div>
 
         <div class="column col-1"></div>
@@ -236,28 +280,38 @@
         <div class="column col-5">
           <h4>Open Source</h4>
           <p>This application is <a href="https://github.com/thesplit" target="_blank">open source</a> under the terms
-          of the GNU Affero General Public License v3. This license requires that all changes, including
-          those to an application accessed over the network, be made public under the same license.
-          Most commits to the source code repository are signed with the PGP key of the author
-          and can be verified. The source code is provided in the spirit of transparency and openness
+          of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License v3</a>.
+          This license requires that all changes, including those to an application accessed
+          over the network, be made public under the same license. Most commits to the source
+          code repository are signed with the PGP key of the author and can be independantly
+          verified. The source code is provided in the spirit of transparency and openness
           and to allow the security related aspects of this code to be verified and audited.         
           </p>
         </div>
 
         <div class="column col-5">
           <h4>Run Your Own</h4>
-          <p><em><strong>IMPORTANT Security Note</strong></em> : If you run your own instance you will not have many of
-              the security protections that <a href="https://thesplit.is" target="_blank">thesplit.is</a>
-              provides such as IPv6 support, HSTS, DNSSEC, A+ HTTPS support, offshore DNS, and others.</p>
+          <p><em><strong>IMPORTANT Security Note</strong></em> : While you can run your own instance
+              you won't enjoy some of the infrastructure features and security protections
+              that <a href="https://thesplit.is" target="_blank">thesplit.is</a> offers including:</p>
+              
+          <ul>
+            <li><a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">HTTP Strict Transport Security (HSTS)</a></li>
+            <li><a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">DNSSEC</a></li>
+            <li><a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">SSL LABS A+ rated TLS</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank">Content Security Policy (CSP)</a></li>
+            <li><a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank">Security Headers</a></li>
+            <li><a href="https://www.cloudflare.com/" target="_blank">Cloudflare Global CDN</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/IPv6">IPv6</a></li>
+          </ul>
 
-          <p>You have no reason to trust us yet. We understand that trust is earned. If you want to use
-              this application, but don't yet feel warm and fuzzy about sending your secrets to
-              <a href="https://thesplit.is" target="_blank">thesplit.is</a>, encrypted or not, you can examine the source
-              code and run your own instance of the application on Heroku, or wherever you choose, under
-              the terms of the open source license. We believe so strongly in this we even made a
-              <a href="https://github.com/thesplit/thesplit/blob/master/README.md" target="_blank">Heroku Button</a>
-              to let you do a one-click install of the whole application which will spin up a new
-              instance in minutes.
+          <p>You have no reason to trust us yet, and we understand that trust is earned. If you want to use
+              this application, but don't yet feel all warm and fuzzy about sending your secrets to
+              <a href="https://thesplit.is" target="_blank">thesplit.is</a>, encrypted or not, you can examine
+              the source code and run your own instance of the application on Heroku, or wherever else you
+              choose, under the terms of the open source license. You'll have to setup and maintain several
+              secure host servers but you are free (as in freedom) to do so. No support is provided
+              for self-hosted installations.
           </p>
 
           <p>If you are a commercial organization interested in running an instance within your own
@@ -287,6 +341,33 @@
           servers. We don't share information with any third parties unless required by law with
           a court order, but even then your secrets are safely encrypted with a key that only you know.
           </p>
+        </div>
+
+        <div class="column col-1"></div>
+    </div>
+
+    <div class="columns">
+        <div class="column col-1"></div>
+
+        <div class="column col-5">
+          <h4>Offshore .IS Domain</h4>
+          <p>This site is served from a '.is' domain, which is the Top Level Domain
+              for Iceland. That domain is registered with an Iceland based provider.
+              Iceland provides an environment that offers some of the
+              <a href="https://freedomhouse.org/report/freedom-net/2015/iceland">strongest protections</a>
+              for free speach and against surveillance and government interference in the world.
+          </p>
+          <p>At the moment, only the domain is registered in Iceland, but with sufficient funding
+              we hope to move all content hosting there as well which would put the site and its
+              content beyond the reach of some of the most repressive regimes in the world.
+          </p>
+          <p>The thesplit.is domain has also been <a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">fully secured with DNSSEC</a>.
+          <a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions" target="_blank">DNSSEC</a>, the DNS Security Extensions,
+          uses cryptographic signatures to provide authentication of DNS data and prevent malicious
+          manipulation of DNS results.</p>
+        </div>
+
+        <div class="column col-5">
         </div>
 
         <div class="column col-1"></div>
