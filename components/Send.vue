@@ -46,10 +46,16 @@
     <div class="columns" v-show="activeSecretEncrypted">
         <div class="column col-1"></div>
         <div class="column col-10">
-          <h4>Share Your Encrypted Secret</h4>
+          <h4>Share Your Encrypted Secret Now</h4>
           <p>Your secret has been encrypted with a <em>very strong</em> random encryption key
-          and safely stored. Copy this link and share it with your recipient. The encrypted
-          secret will be destroyed when this link is first clicked, or after 24 hours have passed.</p>
+          and safely encrypted (again) when stored in our server vault. This link is the only possible
+          way to access that secret as only it contains both the unique ID and the decryption
+          key needed to retrieve and view it. The decryption key is *never* written to disk
+          and will be destroyed once you leave this page. Copy the link and share it with your
+          recipient now. The encrypted secret will be destroyed immediately when this link is
+          clicked by them and the encrypted data is viewed. If you try to 'test' the link that
+          action will also destroy the secret. The secret will be permanently destroyed after
+          24 hours whether accessed or not.</p>
         </div>
         <div class="column col-1"></div>
     </div>
@@ -74,7 +80,10 @@
       <div class="column col-1"></div>
       <div class="column col-10">
         <h6>Sent Secret Receipts ( <a @click="deleteAllSentSecrets">Delete All</a> )</h6>
-        <p class="silver">Secrets with the following ID's were previously sent. You can delete the local receipt, or the secret data stored on the server if the secret was not already opened by a recipient.</pre>
+        <p class="silver">These are receipts for secrets previously sent. These only serve
+          as a reminder for what was sent and cannot be used to decrypt or view a secret. You
+          can however also use a receipt to delete a secret stored on the server which has not
+          yet been accessed by a recipient.</pre>
         <table class="table table-striped table-hover">
             <tbody>
                 <tr v-for="secret in sentSecrets | orderBy 'createdAt' -1">
