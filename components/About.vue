@@ -346,12 +346,14 @@
         <div class="column col-1"></div>
         <div class="column col-10">
           <h5>What data is stored in the database?</h5>
-          <p>Currently, only the following information is stored in the data record for a secret:</p>
+          <p>Currently, only the following information is stored in the data record for an encrypted secret:</p>
           <ul>
             <li>Base64 encoded 32 Byte Scrypt salt</li>
             <li>Base64 encoded 24 Byte NaCl SecretBox Nonce</li>
             <li>Base64 encoded NaCl SecretBox Ciphertext</li>
             <li>(ID) Base32 encoded 16 Byte BLAKE2s HMAC of the previous values.</li>
+            <li>Created At Timestamp</li>
+            <li>Expires At Timestamp</li>
           </ul>
         </div>
         <div class="column col-1"></div>

@@ -31,25 +31,22 @@
         <div class="column col-1"></div>
     </div>
 
-    <div class="columns" v-show="activeReceivedSecret">
+    <div class="columns" v-show="activeReceivedSecretPresent">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h6>Secret <span class="silver">( {{ activeReceivedSecretId }} )</span></h6>
-        <p class="silver">Created @ {{ activeReceivedSecretCreatedAt }} UTC</p>
-        <p class="silver">Received @ {{ activeReceivedSecretReceivedAt }} UTC</p>
-        <p class="silver">Expires @ {{ activeReceivedSecretExpiresAt }} UTC</p>
+        <h6>Secret <span class="silver">( ID : {{ activeReceivedSecretId }} : Created {{ activeReceivedSecretCreatedAt }} UTC )</span></h6>
         <pre>{{ activeReceivedSecretPlaintext }}</pre>
       </div>
       <div class="column col-1"></div>
     </div>
 
-    <div class="columns" v-show="!activeReceivedSecret">
+    <div class="columns" v-show="!activeReceivedSecretPresent">
       <div class="column col-3"></div>
       <div class="column col-6">
         <div class="empty">
             <i class="icon icon-people"></i>
-            <p class="empty-title">Ooops, No Secret Selected</p>
-            <p class="empty-meta" v-show="receivedSecretsPresent" >You have some previously received secrets you can view.</p>
+            <p class="empty-title">No Secret Selected</p>
+            <p class="empty-meta" v-show="receivedSecretsPresent" >You have some previously received secrets you can view below.</p>
             <p class="empty-meta">Maybe you'd like to send a new one?</p>
             <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
         </div>
@@ -61,7 +58,7 @@
       <div class="column col-1"></div>
       <div class="column col-10">
         <h6>Previously Received Secrets ( <a @click="deleteAllReceivedSecrets">Delete All</a> )</h6>
-        <p class="silver">These secrets were previously received and decrypted in this browser and stored for your convenience. To protect the sender, and yourself, you should delete those you no longer need. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
+        <p class="silver">These secrets were previously received and decrypted in this browser and stored for your convenience. To protect the sender, and yourself, you should delete those secrets you no longer need. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
         <table class="table table-striped table-hover">
             <tbody>
                 <tr v-bind:class="{ 'selected': paramId === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
@@ -96,13 +93,17 @@ export default {
     },
   },
   created () {
+    this.deleteAllAlerts()
     this.getSecret(this.paramId, this.paramKey)
-    this.setActiveReceivedSecret(this.receivedSecrets[this.paramId])
+  },
+  destroyed () {
+    this.deleteAllAlerts()
+    this.unsetActiveReceivedSecret()
   },
   route: {
     data: function (transition) {
+      this.deleteAllAlerts()
       this.getSecret(this.paramId, this.paramKey)
-      this.setActiveReceivedSecret(this.receivedSecrets[this.paramId])
       transition.next({})
     }
   }

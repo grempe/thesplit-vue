@@ -18,8 +18,14 @@ const defaultBaseUrl = localhost
 // the app starts up. Load certain keys from localStorage
 // if previously saved.
 const state = {
+  // Visual 'toasts'
+  alerts: [],
+
+  // Application wide configuration settings
   settings: {
     debug: true,
+
+    // The API base URL
     apiBaseUrl: defaultBaseUrl,
 
     // N : 2^14 (8192, ~750ms on laptop) : The number of iterations. number (integer)
@@ -39,11 +45,34 @@ const state = {
     // of collision is much much lower.
     hmacLengthBytes: 10
   },
+
+  // The currently in-view received secret
+  activeReceivedSecret: {
+    plaintext: '',
+    keyB32: '',
+    id: '',
+    boxNonceB64: '',
+    boxB64: '',
+    scryptSaltB64: '',
+    createdAt: '',
+    expiresAt: ''
+  },
+
+  // All previously received secrets
   receivedSecrets: JSON.parse(localStorage.getItem(RECEIVED_SECRETS_STORAGE_KEY) || '{}'),
-  activeReceivedSecret: null,
-  sentSecrets: JSON.parse(localStorage.getItem(SENT_SECRETS_STORAGE_KEY) || '{}'),
-  activeSentSecret: null,
-  alerts: []
+
+  // The current in-progress empty secret for the sender to encrypt and send
+  activeSecret: {
+    plaintext: '',
+    keyB32: '',
+    id: '',
+    boxNonceB64: '',
+    boxB64: '',
+    scryptSaltB64: ''
+  },
+
+  // All previously sent secrets
+  sentSecrets: JSON.parse(localStorage.getItem(SENT_SECRETS_STORAGE_KEY) || '{}')
 }
 
 // Create an object storing various mutations. mutation
@@ -93,11 +122,58 @@ const mutations = {
   // RECEIVED SECRETS
 
   SET_ACTIVE_RECEIVED_SECRET (state, sec) {
-    state.activeReceivedSecret = sec
+    if (state.activeReceivedSecret.id !== sec.id) {
+      state.activeReceivedSecret = sec
+    }
   },
 
   UNSET_ACTIVE_RECEIVED_SECRET (state) {
-    state.activeReceivedSecret = null
+    state.activeReceivedSecret = {
+      plaintext: '',
+      keyB32: '',
+      id: '',
+      boxNonceB64: '',
+      boxB64: '',
+      scryptSaltB64: '',
+      createdAt: '',
+      expiresAt: ''
+    }
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_ID (state, id) {
+    Vue.set(state.activeReceivedSecret, 'id', id)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_KEY (state, key) {
+    Vue.set(state.activeReceivedSecret, 'keyB32', key)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_PLAINTEXT (state, pt) {
+    Vue.set(state.activeReceivedSecret, 'plaintext', pt)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE (state, n) {
+    Vue.set(state.activeReceivedSecret, 'boxNonceB64', n)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_BOX (state, b) {
+    Vue.set(state.activeReceivedSecret, 'boxB64', b)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT (state, s) {
+    Vue.set(state.activeReceivedSecret, 'scryptSaltB64', s)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_CREATED_AT (state, t) {
+    Vue.set(state.activeReceivedSecret, 'createdAt', t)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_RECEIVED_AT (state, t) {
+    Vue.set(state.activeReceivedSecret, 'receivedAt', t)
+  },
+
+  SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT (state, t) {
+    Vue.set(state.activeReceivedSecret, 'expiresAt', t)
   },
 
   SAVE_RECEIVED_SECRET (state, sec) {
@@ -114,12 +190,43 @@ const mutations = {
 
   // SENT SECRETS
 
-  SET_ACTIVE_SENT_SECRET (state, sec) {
-    state.activeSentSecret = sec
+  SET_ACTIVE_SECRET (state, sec) {
+    state.activeSecret = sec
   },
 
-  UNSET_ACTIVE_SENT_SECRET (state) {
-    state.activeSentSecret = null
+  UNSET_ACTIVE_SECRET (state) {
+    state.activeSecret = {
+      plaintext: '',
+      keyB32: '',
+      id: '',
+      boxNonceB64: '',
+      boxB64: '',
+      scryptSaltB64: ''
+    }
+  },
+
+  SET_ACTIVE_SECRET_ID (state, id) {
+    Vue.set(state.activeSecret, 'id', id)
+  },
+
+  SET_ACTIVE_SECRET_KEY (state, key) {
+    Vue.set(state.activeSecret, 'keyB32', key)
+  },
+
+  SET_ACTIVE_SECRET_PLAINTEXT (state, pt) {
+    Vue.set(state.activeSecret, 'plaintext', pt)
+  },
+
+  SET_ACTIVE_SECRET_BOX_NONCE (state, n) {
+    Vue.set(state.activeSecret, 'boxNonceB64', n)
+  },
+
+  SET_ACTIVE_SECRET_BOX (state, b) {
+    Vue.set(state.activeSecret, 'boxB64', b)
+  },
+
+  SET_ACTIVE_SECRET_SCRYPT_SALT (state, s) {
+    Vue.set(state.activeSecret, 'scryptSaltB64', s)
   },
 
   SAVE_SENT_SECRET (state, sec) {
