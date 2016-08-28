@@ -23,7 +23,7 @@
 <template>
   <div id="send">
 
-    <div class="columns">
+    <div class="columns" v-show="!activeSecretEncrypted">
         <div class="column col-1"></div>
         <div class="form-group column col-10">
           <textarea id="inputSecretText" :value="activeSecretPlaintext" @input="updateActiveSecretPlaintext" v-bind:disabled="activeSecretEncrypted" type="text" class="form-input" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
@@ -58,6 +58,14 @@
       <div class="column col-1"></div>
       <div class="column col-10">
         <h4 class="text-center"><a v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></h4>
+        <div class="text-center"><a @click="unsetActiveSecret">Clear and Send New Secret</a></div>
+      </div>
+      <div class="column col-1"></div>
+    </div>
+
+    <div class="columns" v-show="activeSecretEncrypted">
+      <div class="column col-1"></div>
+      <div class="column col-10">
       </div>
       <div class="column col-1"></div>
     </div>
