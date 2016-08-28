@@ -27,12 +27,12 @@
       <div class="column">
         <header class="navbar bg-grey">
           <section class="navbar-section">
-             <a v-link="{ path: '/s' }" class="navbar-brand">thesplit.is</a><br>
+             <a v-link="{ path: '/send' }" class="navbar-brand">thesplit.is</a><br>
           </section>
           <section class="navbar-section">
-              <a v-link="{ path: '/s' }" class="btn btn-link">Send</a>
-              <a v-link="{ path: '/r' }" class="btn btn-link">Receive</a>
-              <a v-link="{ path: '/v' }" class="btn btn-link">Verify</a>
+              <a v-link="{ path: '/send' }" class="btn btn-link">Send</a>
+              <a v-link="{ path: '/receive' }" class="btn btn-link">Receive</a>
+              <a v-link="{ path: '/verify' }" class="btn btn-link">Verify</a>
               <a v-link="{ path: '/security' }" class="btn btn-link">Security</a>
               <a v-link="{ path: '/about' }" class="btn btn-link">About</a>
               <a v-link="{ path: '/debug' }" class="btn btn-link" v-if="settings.debug">Debug</a>

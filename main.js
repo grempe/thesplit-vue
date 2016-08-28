@@ -63,9 +63,15 @@ router.map({
       name: 'security',
       component: Security
   },
+  '/send': {
+      component: Send
+  },
   '/s': {
       name: 'send',
       component: Send
+  },
+  '/receive': {
+      component: Receive
   },
   '/r': {
       name: 'receive',
@@ -79,6 +85,9 @@ router.map({
       name: 'receive-id-key',
       component: Receive
   },
+  '/verify': {
+      component: Verify
+  },
   '/v': {
       name: 'verify',
       component: Verify
@@ -91,6 +100,9 @@ router.map({
       name: 'debug',
       component: Debug
   },
+  '/d': {
+      component: Debug
+  },
 })
 
 router.beforeEach(function () {
@@ -98,7 +110,7 @@ router.beforeEach(function () {
 })
 
 router.redirect({
-  '*': '/s'
+  '*': '/send'
 })
 
 router.start(App, '#app')
