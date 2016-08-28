@@ -34,7 +34,7 @@
     <div class="columns" v-show="activeReceivedSecretPresent">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h6>Secret <span class="silver">( ID : {{ activeReceivedSecretId }} : Created {{ activeReceivedSecretCreatedAt }} UTC )</span></h6>
+        <h6>Decrypted Secret <span class="silver">( ID : {{ activeReceivedSecretId }} : Created {{ activeReceivedSecretCreatedAt }} UTC )</span></h6>
         <pre>{{ activeReceivedSecretPlaintext }}</pre>
       </div>
       <div class="column col-1"></div>
@@ -46,7 +46,7 @@
         <div class="empty">
             <i class="icon icon-people"></i>
             <p class="empty-title">No Secret Selected</p>
-            <p class="empty-meta" v-show="receivedSecretsPresent" >You have some previously received secrets you can view below.</p>
+            <p class="empty-meta" v-show="receivedSecretsPresent" >You have some previously received secrets you can view.</p>
             <p class="empty-meta">Maybe you'd like to send a new one?</p>
             <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
         </div>
@@ -63,7 +63,7 @@
             <tbody>
                 <tr v-bind:class="{ 'selected': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
                   <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
-                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ (new Date(secret.receivedAt)).toLocaleString() }}</a></td>
+                  <td>{{ (new Date(secret.receivedAt)).toLocaleString() }}</td>
                   <td><a @click="deleteReceivedSecret(secret)" class="btn btn-link">Delete</a></td>
                 </tr>
             </tbody>
