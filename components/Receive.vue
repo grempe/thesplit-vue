@@ -84,14 +84,8 @@ export default {
     getters,
     actions
   },
-  computed: {
-    paramId: function () {
-      return this.$route.params.id
-    },
-  },
   created () {
     this.deleteAllAlerts()
-    this.getSecret(this.$route.params.id, this.$route.params.key)
   },
   destroyed () {
     this.deleteAllAlerts()
