@@ -28,9 +28,9 @@
         <div class="column col-10">
           <h4>Security</h4>
           <h4>This security design of this application is guided by a single overarching
-              principle; that the security and privacy of its users, and the information they
-              want to share, is paramount. All other considerations are secondary. Here are
-              some of the key security features.</h4>
+              principle; that the security and privacy of our users, and the confidentiality
+              and integrity of the information they choose to share, is paramount. All other
+              considerations are secondary.</h4>
         </div>
         <div class="column col-1"></div>
     </div>
