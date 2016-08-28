@@ -231,14 +231,6 @@ export const encryptActiveSecret = ({ dispatch, state }) => {
 
   // Trigger action to send the secret payload to the server
   postActiveSecret({dispatch, state})
-
-  // AUTO-DELETE all local active secret data a short time after encrypted
-  // and submitted to the server. The user must copy the URL within that time
-  // or it will dissapear. Avoids possibility of someone viewing the UI
-  // afterwards and finding plaintext laying around.
-  setTimeout(function(){
-    dispatch('UNSET_ACTIVE_SECRET')
-  }, 60000)
 }
 
 export const postActiveSecret = ({ dispatch, state }) => {
