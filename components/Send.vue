@@ -65,7 +65,7 @@
     <div class="columns" v-show="sentSecretsPresent">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h6>Sent Secret Receipts</h6>
+        <h6>Sent Secret Receipts ( <a @click="deleteAllSentSecrets">Delete All</a> )</h6>
         <p class="silver">Secrets with the following ID's were previously sent. You can delete the local receipt, or the secret data stored on the server if the secret was not already opened by a recipient.</pre>
         <table class="table table-striped table-hover">
             <tbody>

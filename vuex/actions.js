@@ -47,7 +47,6 @@ export function deleteSentSecret ({ dispatch }, sec) {
 
 export function deleteAllSentSecrets ({ dispatch }) {
   dispatch('DELETE_ALL_SENT_SECRETS')
-  dispatch('UNSET_ACTIVE_SENT_SECRET')
 }
 
 export function setActiveSecret ({ dispatch }, sec) {
