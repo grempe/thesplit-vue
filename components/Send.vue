@@ -21,7 +21,7 @@
 -->
 
 <template>
-  <div id="encrypt">
+  <div id="send">
 
     <div class="columns">
         <div class="column col-1"></div>
@@ -57,7 +57,7 @@
     <div class="columns" v-show="activeSecretEncrypted">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h4 class="text-center"><a v-link="{ name: 'decrypt-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></h4>
+        <h4 class="text-center"><a v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></h4>
       </div>
       <div class="column col-1"></div>
     </div>
@@ -121,6 +121,7 @@ export default {
     this.deleteAllAlerts()
   },
   destroyed () {
+    this.deleteAllAlerts()
     this.unsetActiveSecret()
   },
   route: {

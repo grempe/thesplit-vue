@@ -80,7 +80,7 @@ export function activeSecretEncrypted (state) {
 
 export function activeSecretUrl (state) {
   if (location.protocol && location.host && state.activeSecret.id !== '' && state.activeSecret.keyB32 !== '') {
-    return location.protocol + '//' + location.host + '/#!/d/' + state.activeSecret.id + '/' + state.activeSecret.keyB32
+    return location.protocol + '//' + location.host + '/#!/r/' + state.activeSecret.id + '/' + state.activeSecret.keyB32
   }
 }
 

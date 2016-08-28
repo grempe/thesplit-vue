@@ -23,8 +23,8 @@ import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
 
 import App from './components/App.vue'
-import Encrypt from './components/Encrypt.vue'
-import Decrypt from './components/Decrypt.vue'
+import Send from './components/Send.vue'
+import Receive from './components/Receive.vue'
 import Verify from './components/Verify.vue'
 import About from './components/About.vue'
 import Security from './components/Security.vue'
@@ -63,21 +63,21 @@ router.map({
       name: 'security',
       component: Security
   },
-  '/e': {
-      name: 'encrypt',
-      component: Encrypt
+  '/s': {
+      name: 'send',
+      component: Send
   },
-  '/d': {
-      name: 'decrypt',
-      component: Decrypt
+  '/r': {
+      name: 'receive',
+      component: Receive
   },
-  '/d/:id': {
-      name: 'decrypt-id',
-      component: Decrypt
+  '/r/:id': {
+      name: 'receive-id',
+      component: Receive
   },
-  '/d/:id/:key': {
-      name: 'decrypt-id-key',
-      component: Decrypt
+  '/r/:id/:key': {
+      name: 'receive-id-key',
+      component: Receive
   },
   '/v': {
       name: 'verify',
@@ -98,7 +98,7 @@ router.beforeEach(function () {
 })
 
 router.redirect({
-  '*': '/e'
+  '*': '/s'
 })
 
 router.start(App, '#app')

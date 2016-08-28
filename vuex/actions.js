@@ -99,8 +99,6 @@ function makeAction (type) {
 export const getSecret = ({ dispatch, state }, id, keyB32) => {
   // requires id and keyB32 from URI to retrieve a secret
   if (!state.receivedSecrets[id] && id && keyB32) {
-    dispatch('UNSET_ACTIVE_RECEIVED_SECRET')
-
     Vue.http.get(state.settings.apiBaseUrl + '/secrets/' + id).then((response) => {
       // API returns boxB64, boxNonceB64, scryptSaltB64, createdAt, expiresAt
       let d = new Date

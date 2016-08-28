@@ -21,7 +21,7 @@
 -->
 
 <template>
-  <div id="decrypt">
+  <div id="receive">
 
     <div class="columns">
         <div class="column col-1"></div>
@@ -61,9 +61,9 @@
         <p class="silver">These secrets were previously received and decrypted in this browser and stored for your convenience. To protect the sender, and yourself, you should delete those secrets you no longer need. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
         <table class="table table-striped table-hover">
             <tbody>
-                <tr v-bind:class="{ 'selected': paramId === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
-                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'decrypt-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
-                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'decrypt-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ (new Date(secret.receivedAt)).toLocaleString() }}</a></td>
+                <tr v-bind:class="{ 'selected': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
+                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
+                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ (new Date(secret.receivedAt)).toLocaleString() }}</a></td>
                   <td><a @click="deleteReceivedSecret(secret)" class="btn btn-link">Delete</a></td>
                 </tr>
             </tbody>
@@ -88,13 +88,10 @@ export default {
     paramId: function () {
       return this.$route.params.id
     },
-    paramKey: function () {
-      return this.$route.params.key
-    },
   },
   created () {
     this.deleteAllAlerts()
-    this.getSecret(this.paramId, this.paramKey)
+    this.getSecret(this.$route.params.id, this.$route.params.key)
   },
   destroyed () {
     this.deleteAllAlerts()
@@ -103,7 +100,7 @@ export default {
   route: {
     data: function (transition) {
       this.deleteAllAlerts()
-      this.getSecret(this.paramId, this.paramKey)
+      this.getSecret(this.$route.params.id, this.$route.params.key)
       transition.next({})
     }
   }
