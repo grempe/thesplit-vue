@@ -99,15 +99,15 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
   // requires id and keyB32 from URI to retrieve a secret
   if (!state.receivedSecrets[id] && id && keyB32) {
     Vue.http.get(state.settings.apiBaseUrl + '/secrets/' + id).then((response) => {
-      // API returns boxB64, boxNonceB64, scryptSaltB64, createdAt, expiresAt
+      // API returns box, boxNonce, scryptSalt, createdAt, expiresAt
       let d = new Date
       let r = response.json().data
 
       dispatch('SET_ACTIVE_RECEIVED_SECRET_ID', id)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_KEY', keyB32)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE', r.boxNonceB64)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX', r.boxB64)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT', r.scryptSaltB64)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE', r.boxNonce)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX', r.box)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT', r.scryptSalt)
       // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
       dispatch('SET_ACTIVE_RECEIVED_SECRET_CREATED_AT', r.createdAt * 1000)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT', r.expiresAt * 1000)
@@ -115,7 +115,7 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
       
       // Derive NaCl Secret Box Key and HMAC Key with Scrypt
       let keyBytes = nacl.util.decodeBase64(base32.decode(state.activeReceivedSecret.keyB32))
-      let scryptSaltBytes = nacl.util.decodeBase64(state.activeReceivedSecret.scryptSaltB64)
+      let scryptSaltBytes = nacl.util.decodeBase64(state.activeReceivedSecret.scryptSalt)
       let scryptBytes = scrypt(keyBytes,
                                 scryptSaltBytes,
                                 state.settings.scrypt.N,
@@ -129,16 +129,16 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
       // Create the BLAKE2s HMAC used for authenticating the storage ID/HMAC
       // against the payload actually retrieved
       let h = new BLAKE2s(state.settings.hmacLengthBytes, hmacKeyKdfBytes)
-      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.scryptSaltB64))
-      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.boxNonceB64))
-      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.boxB64))
+      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.scryptSalt))
+      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.boxNonce))
+      h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.box))
       let blake2sHash = h.hexDigest()
 
       // Secure constant-time string comparison
       if (nacl.verify(nacl.util.decodeUTF8(blake2sHash), nacl.util.decodeUTF8(state.activeReceivedSecret.id))) {
         // Payload HMAC is OK, decrypt the secret box contents
-        let boxBytes = nacl.util.decodeBase64(state.activeReceivedSecret.boxB64)
-        let boxNonceBytes = nacl.util.decodeBase64(state.activeReceivedSecret.boxNonceB64)
+        let boxBytes = nacl.util.decodeBase64(state.activeReceivedSecret.box)
+        let boxNonceBytes = nacl.util.decodeBase64(state.activeReceivedSecret.boxNonce)
         let secretBytes = nacl.secretbox.open(boxBytes, boxNonceBytes, boxKeyKdfBytes)
 
         if (secretBytes && nacl.util.encodeUTF8(secretBytes) !== "undefined") {
@@ -237,12 +237,12 @@ export const postActiveSecret = ({ dispatch, state }) => {
   // Whitelist to be sure we only send allowed attributes to the server
   let whiteSec = {
     id: state.activeSecret.id,
-    boxNonceB64: state.activeSecret.boxNonceB64,
-    boxB64: state.activeSecret.boxB64,
-    scryptSaltB64: state.activeSecret.scryptSaltB64
+    boxNonce: state.activeSecret.boxNonce,
+    box: state.activeSecret.box,
+    scryptSalt: state.activeSecret.scryptSalt
   }
 
-  // Expects object w/ id, boxNonceB64, boxB64, scryptSaltB64
+  // Expects object w/ id, boxNonce, box, scryptSalt
   Vue.http.post(state.settings.apiBaseUrl + '/secrets', whiteSec).then((response) => {
     // API returns id, createdAt, expiresAt
     let newSec = response.json().data

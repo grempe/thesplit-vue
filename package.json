@@ -26,6 +26,7 @@
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^8.5.3",
     "vue-resource": "^0.9.3",
+    "vue-resource-case-converter": "^1.0.5",
     "vue-router": "^0.7.13",
     "vuex": "^1.0.0-rc.2"
   },
