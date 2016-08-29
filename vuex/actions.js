@@ -41,7 +41,10 @@ export function saveSentSecret ({ dispatch }, sec) {
   dispatch('SET_ACTIVE_SENT_SECRET', sec)
 }
 
-export function deleteSentSecret ({ dispatch }, sec) {
+export function deleteSentSecret ({ dispatch, state }, sec) {
+  if (state.activeSecret && state.activeSecret.id === sec.id) {
+    dispatch('UNSET_ACTIVE_SECRET')
+  }
   dispatch('DELETE_SENT_SECRET', sec.id)
 }
 
@@ -164,14 +167,17 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
 // SENDING SECRETS
 
 export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
+  if (state.activeSecret && state.activeSecret.id === sec.id) {
+    dispatch('UNSET_ACTIVE_SECRET')
+  }
   dispatch('DELETE_SENT_SECRET', sec.id)
   Vue.http.delete(state.settings.apiBaseUrl + '/secrets/' + sec.id).then((response) => {
-    dispatch('ADD_ALERT', 'success', "The local receipt and server secret have been destroyed.")
+    dispatch('ADD_ALERT', 'success', "The local receipt and server secret have been removed.")
   }, (response) => {
     // error callback
     if (response.data && response.data.message) {
       if (response.data.code === 404) {
-        dispatch('ADD_ALERT', 'success', "The local receipt and server secret have been destroyed.")
+        dispatch('ADD_ALERT', 'primary', "The local receipt was deleted, the server secret was already viewed or has expired.")
       } else {
         dispatch('ADD_ALERT', 'danger', response.data.message)
       }

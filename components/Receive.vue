@@ -57,14 +57,14 @@
     <div class="columns" v-show="receivedSecretsPresent">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h6>Previously Received Secrets ( <a @click="deleteAllReceivedSecrets">Delete All</a> )</h6>
-        <p class="silver">These secrets were previously received and decrypted in this browser and stored for your convenience. To protect the sender, and yourself, you should delete those secrets you no longer need. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
+        <h6>Received Secrets ( <a @click="deleteAllReceivedSecrets">delete all</a> )</h6>
+        <p class="silver">These secrets were previously received, decrypted locally, and stored for your convenience. To protect the sender, and yourself, you should delete any secrets you no longer need access to. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
         <table class="table table-striped table-hover">
             <tbody>
                 <tr v-bind:class="{ 'selected': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
                   <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
                   <td>{{ (new Date(secret.receivedAt)).toLocaleString() }}</td>
-                  <td><a @click="deleteReceivedSecret(secret)" class="btn btn-link">Delete</a></td>
+                  <td><a @click="deleteReceivedSecret(secret)" class="btn btn-link">delete</a></td>
                 </tr>
             </tbody>
         </table>

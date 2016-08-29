@@ -79,17 +79,17 @@
     <div class="columns" v-show="sentSecretsPresent">
       <div class="column col-1"></div>
       <div class="column col-10">
-        <h6>Sent Secret Receipts ( <a @click="deleteAllSentSecrets">Delete All</a> )</h6>
+        <h6>Receipts ( <a @click="deleteAllSentSecrets">delete all local</a> )</h6>
         <p class="silver">These are receipts for secrets previously sent. These only serve
           as a reminder for what was sent and cannot be used to decrypt or view a secret. You
-          can however also use a receipt to delete a secret stored on the server which has not
+          can however use a receipt to delete a secret stored on the server which has not
           yet been accessed by a recipient.</pre>
         <table class="table table-striped table-hover">
             <tbody>
                 <tr v-for="secret in sentSecrets | orderBy 'createdAt' -1">
                   <td>{{ $key }}</td>
                   <td>{{ (new Date(secret.createdAt)).toLocaleString() }}</td>
-                  <td><a @click="deleteServerSentSecret(secret)" class="btn btn-link">Delete</a></td>
+                  <td>Delete <a @click="deleteSentSecret(secret)">receipt</a> | <a @click="deleteServerSentSecret(secret)">receipt + secret</a></td>
                 </tr>
             </tbody>
         </table>
