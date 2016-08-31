@@ -62,6 +62,10 @@ export function receivedSecretsPresent (state) {
     : false
 }
 
+export function receivedSecretsCount (state) {
+  return Object.keys(state.receivedSecrets).length
+}
+
 // SENT SECRETS
 
 export function activeSecret (state) {

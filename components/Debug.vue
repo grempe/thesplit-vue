@@ -23,34 +23,44 @@
 <template>
   <div id="debug">
 
-    <div class="columns" v-show="!foo">
-        <div class="column col-1"></div>
-        <div class="form-group column col-10">
-          <h4>Debug</h4>
-          <p>You probably don't want to play here. Things might explode if you do.</p>
-        </div>
-        <div class="column col-1"></div>
+    <h2>Debug</h2>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>You probably don't want to play here. Things might explode if you do.</p>
+      </div>
     </div>
 
-    <div class="columns" v-show="!foo">
-        <div class="column col-1"></div>
-        <div class="form-group column col-10">
-            <p>state.settings.debug : {{ settings.debug }} </p>
-            <button @click='setDebugOn'>True</button>
-            <button @click='setDebugOff'>False</button>
-        </div>
-        <div class="column col-1"></div>
+    <div class="row">
+      <div class="col-md-12">
+        <p>state.settings.debug : {{ settings.debug }} </p>
+        <button @click='setDebugOn'>True</button>
+        <button @click='setDebugOff'>False</button>
+      </div>
     </div>
 
-    <div class="columns" v-show="!foo">
-        <div class="column col-1"></div>
-        <div class="form-group column col-10">
-            <p>state.settings.apiBaseUrl : {{ settings.apiBaseUrl }} </p>
-            <button @click='setDevApi'>Use Dev API</button>
-            <button @click='setHostApi'>Use Own Host API</button>
-            <button @click='setProdApi'>Use Production API</button>
-        </div>
-        <div class="column col-1"></div>
+    <br>
+    
+    <div class="row">
+      <div class="col-md-12">
+        <p>state.settings.apiBaseUrl : {{ settings.apiBaseUrl }} </p>
+        <button @click='setDevApi'>Use Dev API</button>
+        <button @click='setHostApi'>Use Own Host API</button>
+        <button @click='setProdApi'>Use Production API</button>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>Test Alerts</p>
+        <button @click="addAlert('info', 'info blue')">info</button>
+        <button @click="addAlert('success', 'success green')">success</button>
+        <button @click="addAlert('warning', 'warning yellow')">warning</button>
+        <button @click="addAlert('danger', 'danger red')">danger</button>
+        <button @click="deleteAllAlerts()">delete all alerts</button>
+      </div>
     </div>
 
   </div>
@@ -68,9 +78,17 @@ export default {
   vuex: {
     getters,
     actions
+  },
+  route: {
+    data: function (transition) {
+
+      // bootstrap tooltip activate
+      this.$nextTick(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+
+      transition.next({})
+    }
   }
 }
 </script>
-
-<style>
-</style>

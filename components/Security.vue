@@ -23,24 +23,20 @@
 <template>
   <div id="security">
 
-    <div class="columns">
-        <div class="column col-1"></div>
-        <div class="column col-10">
-          <h4>Security</h4>
-          <h4>This security design of this application is guided by a single overarching
-              principle; that the security and privacy of our users, and the confidentiality
-              and integrity of the information they choose to share, is paramount. All other
-              considerations are secondary.</h4>
-        </div>
-        <div class="column col-1"></div>
+    <h2>Security</h2>
+    <div class="row">
+      <div class="col-md-12">
+      <p class="lead">This security design of this application is guided by a single overarching
+        principle; that the security and privacy of our users, and the confidentiality
+        and integrity of the information they choose to share, is paramount. All other
+        considerations are secondary. Period. Full-stop.</p>
+      </div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-        
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>End-To-End Encrypted</h4>
-          <p>All user content is encrypted locally in the browser using before being
+          <p>All user content is encrypted locally in the browser before being
               transmitted to the server for sharing. All data is encrypted with
               <a href="http://tweetnacl.cr.yp.to/index.html" target="_blank">TweetNaCl</a>/
               <a href="http://nacl.cr.yp.to" target="_blank">NaCl</a> compatible
@@ -51,10 +47,10 @@
           <p>A secure Random Number Generator (CSPRNG) generates an 8 byte
               one-time use random key. This key material is then stretched to 64 bytes,
               using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank">Scrypt Key Derivation Function (KDF)</a>.
-              The first 32 Bytes of this stretched key is used as the symmetric key
-              for an NaCl Secret Box, while the second 32 Bytes is used as a BLAKE2s HMAC key to
+              The first 32 Bytes of this stretched key material is used as the symmetric key
+              for an NaCl 'Secret Box', while the second 32 Bytes are used as a BLAKE2s HMAC key to
               authenticate the entire server payload. The following security libraries are used
-              in the client.
+              in the client. No crypto libraries are required on the server.
           </p>
           <p>
             <ul>
@@ -65,7 +61,7 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>Zero-Knowledge Server</h4>
           <p>The most important security principle for the server is that it cannot reveal secrets it
               never had. Even if the server were to be fully compromised and publicly exposed, it can
@@ -96,14 +92,10 @@
            <p>The server component of this application is implemented in Ruby and you can view and audit
                the <a href="https://github.com/thesplit/thesplit" target="_blank">source code</a>.</p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>Encrypted Vault Database with Auto Expiring Access Tokens</h4>
           <p>All secret data is stored in a strongly encrypted
               <a href="https://www.hashicorp.com/blog/vault.html" target="_blank">Hashicorp Vault Database</a>,
@@ -125,7 +117,7 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>One-Time Use</h4>
           <p>All secret ciphertext can be downloaded only once. This is strictly enforced by Vault.
               Once you retrieve the encrypted data representing a secret its access token is
@@ -143,14 +135,10 @@
               only one, person will get the code.
           </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>Round Trip Content Authentication</h4>
           <p>It is important that creators and recipients of secrets have confidence in the
               integrity of the secret data that was shared as it makes its way over the Internet.
@@ -179,7 +167,7 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>Blockchain Anchored</h4>
           <p>Every secret that is shared has a unique ID value which, as is explained in greater detail
               on this page, ensures that the data is unchanged. We take some additional steps to protect
@@ -211,14 +199,10 @@
                 any information about the original secret by examining the SHA256 hash chain.
             </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>HTTPS (TLS) Everywhere</h4>
           <p>This site is protected by a TLS/SSL certificate and has been awarded
               an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">A+ rating from SSLLABS.com</a>
@@ -228,11 +212,11 @@
               (<a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security" target="_blank">HSTS</a>)
               is also used to ensure that all browser connections to the site are protected by forcing
               HTTP connections to be redirected to their HTTPS equivalent. The 'thesplit.is' domain has also been
-              submitted to the <a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">Chrome HSTS Pre-Load List</a> and is currently
-              pending hard-coding into the HSTS lists for Google Chrome and other browsers.</p>
+              added to the <a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">HSTS Pre-Load List</a> and
+              is currently pending hard-coding into the HSTS lists for Google Chrome and other browsers.</p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>Content Security Policy</h4>
           <p>The server implements a <a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank">Content Security Policy (CSP)</a>
           that helps prevent cross-site scripting (XSS), clickjacking and other code injection attacks resulting from execution of
@@ -240,14 +224,10 @@
           from other domains.
           </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>Subresource Integrity (SRI)</h4>
           <p> <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank">Subresource Integrity</a>
           is a relatively new security feature offered in modern browsers that that enables
@@ -261,23 +241,21 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>Single Page Application</h4>
           <p>The web client for <a href="https://thesplit.is" target="_blank">thesplit.is</a> is a
           <a href="http://vuejs.org" target="_blank">Vue.js</a> Javascript single page application which
-          communicates with our REST API server. There is no information leaked about
-          your secret from this application to the server and you can monitor the very
-          limited calls made to the server API using your browser dev tools.
+          communicates with our REST API server over a TLS connection. The number of API calls is kept
+          very low and very little information of use to an attacker is sent over the wire. Only timestamps
+          and already encrypted material is sent. Most importantly, the encryption key never leaves
+          the sender or recipients browser. It is never transmitted to our servers. You'll also enjoy
+          the performance of this single-page application which is pretty 'snappy'.
           </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>Open Source</h4>
           <p>This application is <a href="https://github.com/thesplit" target="_blank">open source</a> under the terms
           of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License v3</a>.
@@ -289,43 +267,41 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>Run Your Own</h4>
           <p><em><strong>IMPORTANT Security Note</strong></em> : While you can run your own instance
               you won't enjoy some of the infrastructure features and security protections
-              that <a href="https://thesplit.is" target="_blank">thesplit.is</a> offers including:</p>
+              that <a href="https://thesplit.is" target="_blank">thesplit.is</a> can offer:</p>
               
           <ul>
             <li><a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">HTTP Strict Transport Security (HSTS)</a></li>
             <li><a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">DNSSEC</a></li>
             <li><a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">SSL LABS A+ rated TLS</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank">Subresource Integrity (SRI)</a></li>
             <li><a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank">Content Security Policy (CSP)</a></li>
             <li><a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank">Security Headers</a></li>
             <li><a href="https://www.cloudflare.com/" target="_blank">Cloudflare Global CDN</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/IPv6">IPv6</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/IPv6">IPv6 Support</a></li>
           </ul>
 
           <p>You have no reason to trust us yet, and we understand that trust is earned. If you want to use
               this application, but don't yet feel all warm and fuzzy about sending your secrets to
               <a href="https://thesplit.is" target="_blank">thesplit.is</a>, encrypted or not, you can examine
               the source code and run your own instance of the application on Heroku, or wherever else you
-              choose, under the terms of the open source license. You'll have to setup and maintain several
-              secure host servers but you are free (as in freedom) to do so. No support is provided
-              for self-hosted installations.
+              choose, under the terms of the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License</a>.
+              You'll have to setup and maintain several secure host servers but you are free
+              (as in freedom) to do so. No support is provided by us for self-hosted installations.
           </p>
 
-          <p>If you are a commercial organization interested in running an instance within your own
-              organization please contact us for licensing terms.
+          <p>If you are a commercial organization interested in running an instance of this application
+              within your own organization under a more permissive license please contact us for
+              licensing terms.
           </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>No Advertising</h4>
           <p><a href="https://thesplit.is" target="_blank">thesplit.is</a> website displays no advertising. Our initial
           offering is free to use for all and we hope to generate income by providing premium features
@@ -333,29 +309,26 @@
           </p>
         </div>
 
-        <div class="column col-5">
+        <div class="col-md-6">
           <h4>No Tracking Scripts</h4>
           <p><a href="https://thesplit.is" target="_blank">thesplit.is</a> does not use any third-party tracking scripts
           which can compromise your privacy. We do capture some very basic information about site usage,
           which does not rely on personal information sharing, and which is only reported to our own
-          servers. We don't share information with any third parties unless required by law with
-          a court order, but even then your secrets are safely encrypted with a key that only you know.
+          servers. We don't share information with any third parties unless required by law and accompanied
+          by a court order. Even in that case your secrets are safely encrypted with a key that only you and
+          your recipient know.
           </p>
         </div>
-
-        <div class="column col-1"></div>
     </div>
 
-    <div class="columns">
-        <div class="column col-1"></div>
-
-        <div class="column col-5">
+    <div class="row">
+        <div class="col-md-6">
           <h4>Offshore .IS Domain</h4>
           <p>This site is served from a '.is' domain, which is the Top Level Domain
               for Iceland. That domain is registered with an Iceland based provider.
               Iceland provides an environment that offers some of the
               <a href="https://freedomhouse.org/report/freedom-net/2015/iceland">strongest protections</a>
-              for free speach and against surveillance and government interference in the world.
+              for free speech and against surveillance and government interference in the world.
           </p>
           <p>At the moment, only the domain is registered in Iceland, but with sufficient funding
               we hope to move all content hosting there as well which would put the site and its
@@ -366,19 +339,7 @@
           uses cryptographic signatures to provide authentication of DNS data and prevent malicious
           manipulation of DNS results.</p>
         </div>
-
-        <div class="column col-5">
-        </div>
-
-        <div class="column col-1"></div>
     </div>
 
   </div>
 </template>
-
-<script>
-export default {}
-</script>
-
-<style>
-</style>

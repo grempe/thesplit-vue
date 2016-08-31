@@ -23,53 +23,64 @@
 <template>
   <div id="receive">
 
-    <div class="columns">
-        <div class="column col-1"></div>
-        <div class="form-group column col-10">
-          <p class="silver" v-show="">The secret shared with you has been decrypted and is displayed below. The server copy has already been destroyed and can never be retrieved again.</p>
+    <h2>Receive a Secret</h2>
+    <div class="row" v-show="activeReceivedSecretPresent">
+      <div class="col-md-12">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">Secret : <span class="text-muted">{{ activeReceivedSecretId }}</span></h3>
+            <br>
+            <p class="text-muted text-small">{{ activeReceivedSecretCreatedAt }} UTC</p>
+          </div>
+          <div class="panel-body">
+            <pre class="pre-scrollable">{{ activeReceivedSecretPlaintext }}</pre>
+          </div>
         </div>
-        <div class="column col-1"></div>
-    </div>
-
-    <div class="columns" v-show="activeReceivedSecretPresent">
-      <div class="column col-1"></div>
-      <div class="column col-10">
-        <h6>Decrypted Secret <span class="silver">( ID : {{ activeReceivedSecretId }} : Created {{ activeReceivedSecretCreatedAt }} UTC )</span></h6>
-        <pre>{{ activeReceivedSecretPlaintext }}</pre>
       </div>
-      <div class="column col-1"></div>
     </div>
 
-    <div class="columns" v-show="!activeReceivedSecretPresent">
-      <div class="column col-3"></div>
-      <div class="column col-6">
+    <div class="row" v-show="!activeReceivedSecretPresent">
+      <div class="col-md-12">
+        <div class="jumbotron">
+          <h3 class="empty-title">No secret selected</h3>
+          <p class="empty-meta" v-show="receivedSecretsPresent" >You have {{ receivedSecretsCount }} secrets linked in the received secrets section below.</p>
+          <p class="empty-meta">Like to send a new one?</p>
+          <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
+        </div>
         <div class="empty">
-            <i class="icon icon-people"></i>
-            <p class="empty-title">No Secret Selected</p>
-            <p class="empty-meta" v-show="receivedSecretsPresent" >You have some previously received secrets you can view.</p>
-            <p class="empty-meta">Maybe you'd like to send a new one?</p>
-            <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
         </div>
       </div>
-      <div class="column col-3"></div>
     </div>
 
-    <div class="columns" v-show="receivedSecretsPresent">
-      <div class="column col-1"></div>
-      <div class="column col-10">
-        <h6>Received Secrets ( <a @click="deleteAllReceivedSecrets">delete all</a> )</h6>
-        <p class="silver">These secrets were previously received, decrypted locally, and stored for your convenience. To protect the sender, and yourself, you should delete any secrets you no longer need access to. These secrets are unencrypted and this is <em>NOT</em> a secure storage area!</pre>
+    <br>
+    <br>
+
+    <div class="row" v-show="receivedSecretsPresent">
+      <div class="col-md-12">
+        <strong>Received ( <a @click="deleteAllReceivedSecrets">delete all</a> )</strong>
         <table class="table table-striped table-hover">
-            <tbody>
-                <tr v-bind:class="{ 'selected': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
-                  <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
-                  <td>{{ (new Date(secret.receivedAt)).toLocaleString() }}</td>
-                  <td><a @click="deleteReceivedSecret(secret)" class="btn btn-link">delete</a></td>
-                </tr>
-            </tbody>
+          <caption>
+            These secrets were previously received, decrypted locally, and stored for your
+            convenience. To protect the sender, and yourself, you should delete any secrets
+            you no longer need access to. These secrets are unencrypted and this is
+            <em>NOT</em> a secure storage area!
+          </caption>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Received At</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr v-bind:class="{ 'success': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
+                <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
+                <td>{{ (new Date(secret.receivedAt)).toLocaleString() }}</td>
+                <td><a @click="deleteReceivedSecret(secret)">delete</a></td>
+              </tr>
+          </tbody>
         </table>
       </div>
-      <div class="column col-1"></div>
     </div>
 
   </div>
@@ -95,6 +106,12 @@ export default {
     data: function (transition) {
       this.deleteAllAlerts()
       this.getSecret(this.$route.params.id, this.$route.params.key)
+
+      // bootstrap tooltip activate
+      this.$nextTick(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+
       transition.next({})
     }
   }

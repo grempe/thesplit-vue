@@ -36,8 +36,13 @@ module.exports = {
         query: {
           limit: 10000,
           name: '[name].[ext]?[hash]'
-        }
-      }
+        },
+      },
+      // { test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' },
+      { test: /\.(woff|woff2)$/, loader: "url?limit=10000&minetype=application/font-woff" },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=application/octet-stream" },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,    loader: "file" },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" }
     ]
   },
   devServer: {

@@ -23,39 +23,22 @@
 <template>
   <div id="verify">
 
-    <div class="columns" v-show="!foo">
-        <div class="column col-1"></div>
-        <div class="form-group column col-10">
-          <h4>Verify a Secret</h4>
-          <p>The integrity of your data is important. Very important. That's why
-              we take the job of ensuring you get back exactly what was put in,
-              Byte for byte, so seriously.</p>
-          <p>Your sensitive data is passed through a series of cryptographic
-              integrity checks, both when uploaded by you and when downloaded
-              by your recipient. We even anchor a hash of your encrypted data
-              to the blockchain to allow an integrity audit without fear of
-              revealing any sensitive information.</p>
-        </div>
-        <div class="column col-1"></div>
+    <h2>Verify a Secret</h2>
+
+    <div class="row" v-show="!foo">
+      <div class="col-md-12">
+        <p>Maintaining the security and integrity of your data is the most important
+          job we do. That's why we take the job of ensuring you get back exactly what
+          was put in, byte for byte, so seriously.</p>
+        <p>Your sensitive data is passed through a series of cryptographic
+            integrity checks, when uploaded and downloaded. We even go the extra
+            mile and anchor a hash of your encrypted data in the Bitcoin blockchain,
+            which we use as an immutable data store. This allows anyone to perform
+            a data integrity audit without fear of revealing sensitive information.</p>
+      </div>
     </div>
     
-    <div class="columns" v-show="!foo">
-      <div class="column col-1"></div>
-        <div class="form-group column col-10">
-          <label class="form-label" for="inputId">ID</label>
-          <input id="inputId" v-model="id" type="text" class="form-input" placeholder="ID" autofocus></input>
-        </div>
-      <div class="column col-1"></div>
-    </div>
-
-    <div class="columns" v-show="!foo">
-      <div class="column col-9"></div>
-      <div class="column col-2">
-        <button class="btn btn-primary float-right tooltip tooltip-left" data-tooltip="Cryptographically verify secret data integrity" v-on:click="verifyReceipt" :disabled="!hasIdAndKey">Verify</button>
-      </div>
-      <div class="column col-1"></div>
-    </div>
-
+    <strong>Implementation TBD</strong>
   </div>
 </template>
 
@@ -73,8 +56,16 @@ export default {
     getters,
     actions
   },
+  route: {
+    data: function (transition) {
+
+      // bootstrap tooltip activate
+      this.$nextTick(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+
+      transition.next({})
+    }
+  }
 }
 </script>
-
-<style>
-</style>

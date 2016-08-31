@@ -21,50 +21,54 @@
 -->
 
 <template>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" v-link="{ path: '/send' }">thesplit.is</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a v-link="{ path: '/send' }">Send</a></li>
+          <li><a v-link="{ path: '/receive' }">Receive</a></li>
+          <li><a v-link="{ path: '/verify' }">Verify</a></li>
+          <li><a v-link="{ path: '/security' }">Security</a></li>
+          <li><a v-link="{ path: '/faq' }">FAQ</a></li>
+          <li v-if="settings.debug"><a v-link="{ path: '/debug' }">Debug</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
   <div class="container" v-cloak>
 
-    <div class="columns">
-      <div class="column">
-        <header class="navbar bg-grey">
-          <section class="navbar-section">
-             <a v-link="{ path: '/send' }" class="navbar-brand">thesplit.is</a><br>
-          </section>
-          <section class="navbar-section">
-              <a v-link="{ path: '/send' }" class="btn btn-link">Send</a>
-              <a v-link="{ path: '/receive' }" class="btn btn-link">Receive</a>
-              <a v-link="{ path: '/verify' }" class="btn btn-link">Verify</a>
-              <a v-link="{ path: '/security' }" class="btn btn-link">Security</a>
-              <a v-link="{ path: '/about' }" class="btn btn-link">About</a>
-              <a v-link="{ path: '/debug' }" class="btn btn-link" v-if="settings.debug">Debug</a>
-          </section>
-        </header>
-      </div>
-    </div>
-
-    <div class="columns">
-      <div class="column col-2"></div>
-      <div class="column col-8">
-        <div v-for="alert in alerts">
-          <div class="toast" v-bind:class="{ 'toast-primary': alert.type === 'primary', 'toast-success': alert.type === 'success', 'toast-danger': alert.type === 'danger' }" v-on:click="deleteAlert(alert)">
-              <button class="btn btn-clear float-right" v-on:click="deleteAlert(alert)"></button>
-              {{ alert.msg }}
-          </div>
+    <div class="row">
+      <div v-for="a in alerts" class="col-md-12">
+        <div class="alert alert-dismissible fade in" v-bind:class="{ 'alert-info': a.type === 'info', 'alert-success': a.type === 'success', 'alert-warning': a.type === 'warning', 'alert-danger': a.type === 'danger' }" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="deleteAlert(a)"><span aria-hidden="true">&times;</span></button>
+          {{ a.msg }}
         </div>
       </div>
-      <div class="column col-2"></div>
     </div>
 
     <router-view></router-view>
 
-    <div id="footer" class="text-center">
-      <br>
-      <div class="divider"></div>
-      <br>
-      <em class="silver">the end-to-end encrypted, zero-knowledge, auto-expiring, one-time use, blockchain anchored, secret sharing service</em><br>
-      <br>
-      <p class="silver">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank">@grempe</a></p>
+    <div class="row">
+      <hr>
+      <div class="col-md-12 text-center">
+        <p class="text-muted">the end-to-end encrypted, zero-knowledge, auto-expiring, one-time use, blockchain anchored, secret sharing service</p>
+        <p class="text-muted">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank">@grempe</a></p>
     </div>
-
+    
   </div>
 </template>
 
@@ -82,20 +86,25 @@ export default {
     getters,
     actions
   },
+  route: {
+    data: function (transition) {
+
+      // bootstrap tooltip activate
+      this.$nextTick(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+
+      transition.next({})
+    }
+  },
   store: store // make this and all child components aware of the new store
 }
 </script>
 
 <style>
+/*@import '../node_modules/bootstrap/dist/css/bootstrap.css'*/
+
 [v-cloak] {
   display: none;
-}
-.bg-grey {
-  background-color: #efefef;
-  padding: 1rem;
-  border-radius: .3rem;
-}
-.silver {
-  color: silver;
 }
 </style>

@@ -18,6 +18,16 @@
 //
 // ////////////////////////////////////////////////////////////////////////////
 
+// import jquery
+// see : https://forum.vuejs.org/topic/4370/how-to-property-set-up-external-libraries-and-plugins-with-es6/2
+var $ = require('jquery');
+// assign to window object
+window.jQuery = window.$ = $;
+// only now, require bootstrap
+require('bootstrap');
+// require plugins
+// require('./libs/jquery.upgrade-columns.js');
+
 import Vue from 'vue'
 import VueResource from 'vue-resource'
 import VueResourceCaseConverter from 'vue-resource-case-converter'
@@ -27,7 +37,7 @@ import App from './components/App.vue'
 import Send from './components/Send.vue'
 import Receive from './components/Receive.vue'
 import Verify from './components/Verify.vue'
-import About from './components/About.vue'
+import FAQ from './components/FAQ.vue'
 import Security from './components/Security.vue'
 import Debug from './components/Debug.vue'
 
@@ -57,9 +67,12 @@ Vue.use(VueResourceCaseConverter)
 var router = new VueRouter({history: false})
 
 router.map({
-  '/about': {
-      name: 'about',
-      component: About
+  '/faq': {
+      name: 'faq',
+      component: FAQ
+  },
+  '/f': {
+      component: FAQ
   },
   '/security': {
       name: 'security',

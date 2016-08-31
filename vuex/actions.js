@@ -177,7 +177,7 @@ export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
     // error callback
     if (response.data && response.data.message) {
       if (response.data.code === 404) {
-        dispatch('ADD_ALERT', 'primary', "The local receipt was deleted, the server secret was already viewed or has expired.")
+        dispatch('ADD_ALERT', 'info', "The local receipt was deleted, the server secret was already viewed or has expired.")
       } else {
         dispatch('ADD_ALERT', 'danger', response.data.message)
       }

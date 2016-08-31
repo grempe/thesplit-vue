@@ -18,7 +18,7 @@ const defaultBaseUrl = localhost
 // the app starts up. Load certain keys from localStorage
 // if previously saved.
 const state = {
-  // Visual 'toasts'
+  // Visual alerts
   alerts: [],
 
   // Application wide configuration settings
