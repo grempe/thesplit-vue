@@ -30,7 +30,6 @@ require('bootstrap');
 
 import Vue from 'vue'
 import VueResource from 'vue-resource'
-import VueResourceCaseConverter from 'vue-resource-case-converter'
 import VueRouter from 'vue-router'
 
 import App from './components/App.vue'
@@ -45,7 +44,6 @@ Vue.config.debug = process.env.NODE_ENV !== 'production'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
-Vue.use(VueResourceCaseConverter)
 
 // setting : 'history: false'
 // http://router.vuejs.org/en/options.html

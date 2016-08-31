@@ -102,18 +102,20 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
   // requires id and keyB32 from URI to retrieve a secret
   if (!state.receivedSecrets[id] && id && keyB32) {
     Vue.http.get(state.settings.apiBaseUrl + '/secrets/' + id).then((response) => {
-      // API returns box, boxNonce, scryptSalt, createdAt, expiresAt
+      // API returns box, box_nonce, scrypt_salt, created_at, expires_at
       let d = new Date
       let r = response.json().data
 
+      let rCamelCase = {box: r.box, boxNonce: r.box_nonce, scryptSalt: r.scrypt_salt, createdAt: r.created_at, expiresAt: r.expires_at }
+
       dispatch('SET_ACTIVE_RECEIVED_SECRET_ID', id)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_KEY', keyB32)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE', r.boxNonce)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX', r.box)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT', r.scryptSalt)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE', rCamelCase.boxNonce)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX', rCamelCase.box)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT', rCamelCase.scryptSalt)
       // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_CREATED_AT', r.createdAt * 1000)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT', r.expiresAt * 1000)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_CREATED_AT', rCamelCase.createdAt * 1000)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT', rCamelCase.expiresAt * 1000)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_RECEIVED_AT', d.getTime())
       
       // Derive NaCl Secret Box Key and HMAC Key with Scrypt
@@ -243,19 +245,21 @@ export const postActiveSecret = ({ dispatch, state }) => {
   // Whitelist to be sure we only send allowed attributes to the server
   let whiteSec = {
     id: state.activeSecret.id,
-    boxNonce: state.activeSecret.boxNonce,
+    box_nonce: state.activeSecret.boxNonce,
     box: state.activeSecret.box,
-    scryptSalt: state.activeSecret.scryptSalt
+    scrypt_salt: state.activeSecret.scryptSalt
   }
 
-  // Expects object w/ id, boxNonce, box, scryptSalt
+  // Expects object w/ id, box_nonce, box, scrypt_salt
   Vue.http.post(state.settings.apiBaseUrl + '/secrets', whiteSec).then((response) => {
-    // API returns id, createdAt, expiresAt
-    let newSec = response.json().data
+    // API returns id, created_at, expires_at
+    let r = response.json().data
+    let newSec = {}
     
+    newSec.id = r.id
     // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
-    newSec.createdAt *= 1000
-    newSec.expiresAt *= 1000
+    newSec.createdAt = r.created_at * 1000
+    newSec.expiresAt = r.expires_at * 1000
 
     dispatch('SAVE_SENT_SECRET', newSec)
   }, (response) => {
