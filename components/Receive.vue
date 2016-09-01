@@ -48,7 +48,7 @@
       <div class="col-md-12">
         <div class="jumbotron">
           <h3 class="empty-title">No secret selected</h3>
-          <p class="empty-meta" v-show="receivedSecretsPresent" >You have {{ receivedSecretsCount }} secrets linked in the received secrets section below.</p>
+          <p class="empty-meta" v-show="receivedSecretsPresent" >You have {{ receivedSecretsCount }} {{receivedSecretsCount | pluralize 'secret'}} linked in the received secrets section below.</p>
           <p class="empty-meta">Like to send a new one?</p>
           <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
         </div>
