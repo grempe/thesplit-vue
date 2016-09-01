@@ -23,14 +23,19 @@
 <template>
   <div id="receive">
 
-    <h2>Receive a Secret</h2>
+    <h2 v-show="!activeReceivedSecretPresent">Receive a Secret</h2>
+
     <div class="row" v-show="activeReceivedSecretPresent">
       <div class="col-md-12">
         <div class="panel panel-success">
           <div class="panel-heading">
-            <h3 class="panel-title">Secret : <span class="text-muted">{{ activeReceivedSecretId }}</span></h3>
+            <h4 class="panel-title">Decrypted Secret ( <a @click="unsetActiveReceivedSecret">close</a> )</h4>
             <br>
-            <p class="text-muted text-small">{{ activeReceivedSecretCreatedAt }} UTC</p>
+            <p class="text-muted text-small">
+              <strong>ID</strong> : {{ activeReceivedSecretId }}<br>
+              <strong>Created</strong> : {{ activeReceivedSecretCreatedAt }} UTC
+            </p>
+            <p class="text-muted text-small"></p>
           </div>
           <div class="panel-body">
             <pre class="pre-scrollable">{{ activeReceivedSecretPlaintext }}</pre>

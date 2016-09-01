@@ -22,7 +22,7 @@
 
 <template>
 
-  <nav class="navbar navbar-default">
+  <nav class="navbar navbar-default" v-cloak>
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -119,8 +119,6 @@ export default {
 </script>
 
 <style>
-/*@import '../node_modules/bootstrap/dist/css/bootstrap.css'*/
-
 [v-cloak] {
   display: none;
 }
