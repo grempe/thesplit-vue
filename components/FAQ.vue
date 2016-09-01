@@ -23,7 +23,6 @@
 <template>
   <div id="FAQ">
 
-    <h2>FAQ</h2>
     <h4>Frequently Asked Questions</h4>
 
     <div class="row" v-for="faq in frequentlyAskedQuestions | orderBy 'cat'">

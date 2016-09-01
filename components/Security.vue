@@ -23,7 +23,8 @@
 <template>
   <div id="security">
 
-    <h2>Security</h2>
+    <h4>Security</h4>
+    
     <div class="row">
       <div class="col-md-12">
       <p class="lead">This security design of this application is guided by a single overarching

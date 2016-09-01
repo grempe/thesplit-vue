@@ -23,7 +23,7 @@
 <template>
   <div id="receive">
 
-    <h2 v-show="!activeReceivedSecretPresent">Receive a Secret</h2>
+    <h4 v-show="!activeReceivedSecretPresent">Receive a Secret</h4>
 
     <div class="row" v-show="activeReceivedSecretPresent">
       <div class="col-md-12">

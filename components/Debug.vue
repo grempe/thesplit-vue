@@ -23,7 +23,7 @@
 <template>
   <div id="debug">
 
-    <h2>Debug</h2>
+    <h4>Debug</h4>
 
     <div class="row">
       <div class="col-md-12">

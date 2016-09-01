@@ -23,7 +23,7 @@
 <template>
   <div id="verify">
 
-    <h2>Verify a Secret</h2>
+    <h4>Verify a Secret</h4>
 
     <div class="row" v-show="!foo">
       <div class="col-md-12">

@@ -23,9 +23,10 @@
 <template>
   <div id="send">
 
-    <h2>Send a Secret</h2>
+    <h4 v-show="!activeSecretEncrypted">Send a Secret</h4>
+    <h4 v-show="activeSecretEncrypted">Share Encrypted Secret</h4>
 
-    <div class="row" v-show="!activeSecretEncrypted">
+    <div class="row secret-send-input" v-show="!activeSecretEncrypted">
         <div class="col-md-12">
           <textarea id="inputSecretText" :value="activeSecretPlaintext" @input="updateActiveSecretPlaintext | debounce 250" v-bind:disabled="activeSecretEncrypted" type="text" class="form-control" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
         <div class="progress">
@@ -36,9 +37,7 @@
         </div>
     </div>
 
-    <br>
-
-    <div class="row" v-show="!activeSecretEncrypted">
+    <div class="row secret-send-buttons" v-show="!activeSecretEncrypted">
       <div class="col-xs-12">
         <div class="text-right">
           <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="disableSecretSubmit" data-toggle="tooltip" data-placement="bottom" title="Clear the secret you've entered and don't submit anything">Clear</button>
@@ -47,62 +46,49 @@
       </div>
     </div>
 
-    <div class="row" v-show="activeSecretEncrypted">
+    <div class="row secret-send-link" v-show="activeSecretEncrypted">
       <div class="col-md-12">
-        <h4>Share Your Encrypted Secret Now</h4>
-        <p>Your secret has been securely encrypted with a <em>very strong</em> random encryption key
-        and stored in the server Vault database. A private link has been generated that contains the
-        ID and decryption key needed to locate and unlock your secret. The decryption key is
-        <em>never</em> written to disk and this link will be destroyed once you leave this page.
-        You should immediately copy this link and share it with your recipient. The encrypted secret
-        will be destroyed immediately when this link is clicked and the encrypted data is viewed.
-        If you try to 'test' the link you will also destroy the secret and prevent your recipient from
-        viewing it as well. The secret will be permanently destroyed after 24 hours whether accessed or not.</p>
+        <p>This private link contains the identifier and the secret key needed to retrieve and decrypt your shared secret.
+          This secret key is never stored or transmitted except by you. Secrets can only be viewed once and expire in 24 hours.</p>
       </div>
 
-      <div class="col-md-12">
-          <p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">dev link</a></p>
-          <pre class="text-center">{{ activeSecretUrl }}</pre>
-        
-        <div class="text-center">
-          <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext" data-toggle="tooltip" data-placement="bottom" title="Permanently clear the secret and the private link to it">Clear Secret and Link</button>
+      <div class="col-md-12 text-center">
+        <p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">dev link</a></p>
+        <strong class="text-danger">Save this link <em>now</em>! It will be forever destroyed when you leave this page.</strong>
+        <pre class="bg-danger">{{ activeSecretUrl }}</pre>
+      </div>
+    </div>
+
+    <div class="row secret-send-link-buttons" v-show="activeSecretEncrypted">
+      <div class="col-md-12 text-center">
+        <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext" data-toggle="tooltip" data-placement="bottom" title="Permanently destroy the secret and the private link to it">Destroy Private Link</button>
+      </div>
+    </div>
+
+    <div class="panel panel-default" v-show="sentSecretsPresent" >
+      <div class="panel-heading">
+        <h3 class="panel-title">Receipts <a class="pull-right" @click="deleteAllSentSecrets">delete all</a></h3>
+        <br>
+        <p>Receipts represent secrets previously sent. They cannot be used to decrypt or
+          view the contents of a secret. If you change your mind about sharing you
+          can always delete a secret which hasn't yet expired or been viewed.</p>
+      </div>
+      <div class="panel-body">
+        <div class="row receipt" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            {{ $key }}
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            {{ (new Date(secret.createdAt)).toLocaleString() }}
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <a @click="deleteServerSentSecret(secret)">delete</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <br>
-    <br>
-
-    <div class="row" v-show="sentSecretsPresent">
-      <div class="col-md-12">
-        <strong>Receipts ( <a @click="deleteAllSentSecrets">delete all</a> )</strong>
-        <table class="table table-striped table-hover">
-          <caption>
-            Receipts for secrets previously sent. These serve as a reminder of what was sent
-            and cannot be used to decrypt or view a secret. You can however use a receipt
-            to delete a secret stored on the server which has not yet expired or been
-            viewed.
-          </caption>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Created At</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-              <tr v-bind:class="{ 'success': activeSecret.id === secret.id }" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
-                <td>{{ $key }}</td>
-                <td>{{ (new Date(secret.createdAt)).toLocaleString() }}</td>
-                <td><a @click="deleteSentSecret(secret)">receipt</a><span class="text-muted"> | </span><a @click="deleteServerSentSecret(secret)">both</a></td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
-
 </template>
 
 <script>
@@ -189,3 +175,29 @@ export default {
   },
 }
 </script>
+
+<style>
+  .progress {
+    margin-bottom: 0px;
+  }
+
+  .secret-send-input {
+    margin-bottom: 2em;
+  }
+
+  .secret-send-buttons {
+    margin-bottom: 2em;
+  }
+
+  .secret-send-link {
+    margin-bottom: 2em;
+  }
+
+  .secret-send-link-buttons {
+    margin-bottom: 2em;
+  }
+
+  .receipt {
+    margin-bottom: 1em;
+  }
+</style>

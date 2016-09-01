@@ -32,7 +32,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" v-link="{ path: '/send' }">thesplit.is</a>
+        <a class="navbar-brand" v-link="{ path: '/send' }"><em class="text-muted small">the</em><strong class="text-primary">SPLIT</strong><span class="text-muted small">.is</span></a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
