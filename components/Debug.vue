@@ -27,7 +27,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <p>You probably don't want to play here. Things might explode if you do.</p>
+        <p>Do you really think you should play here?</p>
       </div>
     </div>
 
@@ -43,10 +43,12 @@
     
     <div class="row">
       <div class="col-md-12">
+        <p>state.settings.environment : {{ settings.environment }} </p>
         <p>state.settings.apiBaseUrl : {{ settings.apiBaseUrl }} </p>
-        <button @click='setDevApi'>Use Dev API</button>
-        <button @click='setHostApi'>Use Own Host API</button>
-        <button @click='setProdApi'>Use Production API</button>
+        <button @click='setNpmEnv'>NPM</button>
+        <button @click='setDevEnv'>DEV</button>
+        <button @click='setTestEnv'>TEST</button>
+        <button @click='setProdEnv'>PROD</button>
       </div>
     </div>
 

@@ -8,12 +8,6 @@ Vue.use(Vuex)
 export const SENT_SECRETS_STORAGE_KEY = 'thesplit-sent-secrets'
 export const RECEIVED_SECRETS_STORAGE_KEY = 'thesplit-received-secrets'
 
-const localhost = location.host == '127.0.0.1' || 'localhost'
-
-const defaultBaseUrl = localhost
-  ? 'http://localhost:3000/api/v1'
-  : location.protocol + '//' + location.host + '/api/v1'
-
 // Create an object to hold the initial state when
 // the app starts up. Load certain keys from localStorage
 // if previously saved.
@@ -23,10 +17,18 @@ const state = {
 
   // Application wide configuration settings
   settings: {
-    debug: true,
+    // turn off any debug output by default.
+    debug: false,
 
-    // The API base URL
-    apiBaseUrl: defaultBaseUrl,
+    // Default safely to using the production environment
+    // This will be set on app boot from the ready() function in App.vue
+    // which will read the env from the `body data-environment="ENV"` attribute
+    // which is set by the host that generates the index.html file that loads
+    // this app.
+    environment: 'production',
+
+    // The API base URL, defaults to production
+    apiBaseUrl: 'https://thesplit.is/api/v1',
 
     // N : 2^14 (8192, ~750ms on laptop) : The number of iterations. number (integer)
     // r: Memory factor. number (integer)
@@ -90,15 +92,31 @@ const mutations = {
     state.settings.debug = false
   },
 
-  SET_DEV_API (state) {
+  // application environment
+
+  // npm run dev
+  SET_NPM_ENV (state) {
+    state.settings.environment = 'npm'
+    state.settings.debug = true
     state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
   },
 
-  SET_HOST_API (state) {
-    state.settings.apiBaseUrl = location.protocol + '//' + location.host + '/api/v1'
+  // sinatra development
+  SET_DEV_ENV (state) {
+    state.settings.environment = 'development'
+    state.settings.debug = true
+    state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
+  },
+  
+  SET_TEST_ENV (state) {
+    state.settings.environment = 'test'
+    state.settings.debug = false
+    state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
   },
 
-  SET_PROD_API (state) {
+  SET_PROD_ENV (state) {
+    state.settings.environment = 'production'
+    state.settings.debug = false
     state.settings.apiBaseUrl = 'https://thesplit.is/api/v1'
   },
 

@@ -82,6 +82,23 @@ export default {
     return {
     }
   },
+  ready: function() {
+    // Setup the current environment as provided
+    // for the app by the body tag of the index.html
+    // that loaded us. Defaults to production.
+    if ($('body').attr('data-environment')) {
+      let env = $('body').attr('data-environment')
+      if (env === 'npm') {
+        this.setNpmEnv()
+      } else if (env === 'development') {
+        this.setDevEnv()
+      } else if (env === 'test') {
+        this.setTestEnv()
+      } else {
+        this.setProdEnv()
+      }
+    }
+  },
   vuex: {
     getters,
     actions

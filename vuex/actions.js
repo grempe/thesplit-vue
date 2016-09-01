@@ -88,9 +88,11 @@ export function unsetActiveReceivedSecret ({ dispatch }) {
 
 export const setDebugOn = makeAction('SET_DEBUG_ON')
 export const setDebugOff = makeAction('SET_DEBUG_OFF')
-export const setDevApi = makeAction('SET_DEV_API')
-export const setHostApi = makeAction('SET_HOST_API')
-export const setProdApi = makeAction('SET_PROD_API')
+
+export const setNpmEnv = makeAction('SET_NPM_ENV')
+export const setDevEnv = makeAction('SET_DEV_ENV')
+export const setTestEnv = makeAction('SET_TEST_ENV')
+export const setProdEnv = makeAction('SET_PROD_ENV')
 
 function makeAction (type) {
   return ({ dispatch }, ...args) => dispatch(type, ...args)
