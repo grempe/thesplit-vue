@@ -29,11 +29,11 @@
       <div class="col-md-12">
         <div class="panel panel-success">
           <div class="panel-heading">
-            <h4 class="panel-title">Decrypted Secret ( <a @click="unsetActiveReceivedSecret">close</a> )</h4>
+            <h4 class="panel-title">Decrypted Secret<a class="pull-right" @click="unsetActiveReceivedSecret">&times;</a></h4>
             <br>
             <p class="text-muted text-small">
-              <strong>ID</strong> : {{ activeReceivedSecretId }}<br>
-              <strong>Created</strong> : {{ activeReceivedSecretCreatedAt }} UTC
+              {{ activeReceivedSecretId }}<br>
+              {{ activeReceivedSecretCreatedAt | moment "M/D/YYYY H:mm:ss"}} <span class="text-muted"> - {{ activeReceivedSecretCreatedAt | moment "from" "now" }}</span>
             </p>
             <p class="text-muted text-small"></p>
           </div>
@@ -65,10 +65,9 @@
         <strong>Received ( <a @click="deleteAllReceivedSecrets">delete all</a> )</strong>
         <table class="table table-striped table-hover">
           <caption>
-            These secrets were previously received, decrypted locally, and stored for your
+            These secrets were previously received, decrypted, and stored for your
             convenience. To protect the sender, and yourself, you should delete any secrets
-            you no longer need access to. These secrets are unencrypted and this is
-            <em>NOT</em> a secure storage area!
+            you no longer need access to. These secrets are stored <em>unencrypted</em> in your browser!
           </caption>
           <thead>
             <tr>
@@ -80,7 +79,7 @@
           <tbody>
               <tr v-bind:class="{ 'success': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
                 <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
-                <td>{{ (new Date(secret.receivedAt)).toLocaleString() }}</td>
+                <td>{{ secret.receivedAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.receivedAt | moment "from" "now" }}</span></td>
                 <td><a @click="deleteReceivedSecret(secret)">delete</a></td>
               </tr>
           </tbody>

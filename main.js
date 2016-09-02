@@ -44,6 +44,7 @@ Vue.config.debug = process.env.NODE_ENV !== 'production'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
+Vue.use(require('vue-moment'))
 
 // setting : 'history: false'
 // http://router.vuejs.org/en/options.html

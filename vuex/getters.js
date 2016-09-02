@@ -13,7 +13,9 @@ export function alerts (state) {
 // RECEIVED SECRETS
 
 export function activeReceivedSecret (state) {
-  return state.activeReceivedSecret
+  if (state.activeReceivedSecret) {
+    return state.activeReceivedSecret
+  }
 }
 
 export function activeReceivedSecretPresent (state) {
@@ -30,19 +32,7 @@ export function activeReceivedSecretId (state) {
 
 export function activeReceivedSecretCreatedAt (state) {
   if (state.activeReceivedSecret) {
-    return (new Date(state.activeReceivedSecret.createdAt)).toLocaleString()
-  }
-}
-
-export function activeReceivedSecretReceivedAt (state) {
-  if (state.activeReceivedSecret) {
-    return (new Date(state.activeReceivedSecret.receivedAt)).toLocaleString()
-  }
-}
-
-export function activeReceivedSecretExpiresAt (state) {
-  if (state.activeReceivedSecret) {
-    return (new Date(state.activeReceivedSecret.expiresAt)).toLocaleString()
+    return state.activeReceivedSecret.createdAt
   }
 }
 

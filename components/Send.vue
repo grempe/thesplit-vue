@@ -71,7 +71,8 @@
         <br>
         <p>Receipts represent secrets previously sent. They cannot be used to decrypt or
           view the contents of a secret. If you change your mind about sharing you
-          can always delete a secret which hasn't yet expired or been viewed.</p>
+          can always delete a secret which hasn't yet expired or been viewed. All times
+          shown are in UTC.</p>
       </div>
       <div class="panel-body">
         <div class="row receipt" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
@@ -79,7 +80,7 @@
             {{ $key }}
           </div>
           <div class="col-xs-12 col-sm-6 col-md-4">
-            {{ (new Date(secret.createdAt)).toLocaleString() }}
+            {{ secret.createdAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.createdAt | moment "from" "now" }}</span>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-4">
             <a @click="deleteServerSentSecret(secret)">delete</a>
