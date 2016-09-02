@@ -33,7 +33,7 @@
             <br>
             <p class="text-muted text-small">
               {{ activeReceivedSecretId }}<br>
-              {{ activeReceivedSecretCreatedAt | moment "M/D/YYYY H:mm:ss"}} <span class="text-muted"> - {{ activeReceivedSecretCreatedAt | moment "from" "now" }}</span>
+              {{ activeReceivedSecretCreatedAt | moment "M/D/YYYY H:mm:ss"}}<span class="text-muted"> - {{ activeReceivedSecretCreatedAt | moment "from" "now" }}</span>
             </p>
             <p class="text-muted text-small"></p>
           </div>
@@ -48,9 +48,9 @@
       <div class="col-md-12">
         <div class="jumbotron">
           <h3 class="empty-title">No secret selected</h3>
-          <p class="empty-meta" v-show="receivedSecretsPresent" >You have {{ receivedSecretsCount }} {{receivedSecretsCount | pluralize 'secret'}} linked in the received secrets section below.</p>
-          <p class="empty-meta">Like to send a new one?</p>
-          <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send New Secret</button>
+          <p class="empty-meta" v-show="receivedSecretsPresent" >You've received {{ receivedSecretsCount }} {{receivedSecretsCount | pluralize 'secret'}} before.</p>
+          <p class="empty-meta">Care to send a new one?</p>
+          <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send a new secret</button>
         </div>
         <div class="empty">
         </div>
