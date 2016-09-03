@@ -30,11 +30,20 @@ const state = {
     // The API base URL, defaults to production
     apiBaseUrl: 'https://thesplit.is/api/v1',
 
-    // N : 2^14 (8192, ~750ms on laptop) : The number of iterations. number (integer)
+    // N : 2^14 (16384) : The number of iterations. number (integer)
     // r: Memory factor. number (integer)
     // p: Parallelization factor. number (integer)
     // keyLenBytes: The number of bytes to return. number (integer)
-    scrypt: {N: 8192, r: 8, p: 1, keyLenBytes: 64},
+    //
+    // Should use  ~8MB RAM (Ruby):
+    // irb(main):023:0> (2**14 * 4 * 128) + (4 * 1 * 128)
+    // 8389120
+    //
+    // Runs about 900ms on MacBook Pro
+    //
+    // See : https://pthree.org/2016/06/29/further-investigation-into-scrypt-and-argon2-password-hashing/
+    //
+    scrypt: {N: 16384, r: 4, p: 1, keyLenBytes: 64},
 
     // Length in bytes of the client generated HMAC of the encrypted contents.
     // The HMAC is used as the ID to lookup the encrypted data on the server.
