@@ -6,12 +6,6 @@ We all have secrets. Send yours safely.
 
 [https://thesplit.is](https://thesplit.is)
 
-## Run Your Own
-
-Trust issues? Want to run your own copy of this application on Heroku?
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/thesplit/thesplit)
-
 ## Development
 
 Setup
