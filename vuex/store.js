@@ -107,20 +107,20 @@ const mutations = {
   SET_NPM_ENV (state) {
     state.settings.environment = 'npm'
     state.settings.debug = true
-    state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
+    state.settings.apiBaseUrl = 'http://0.0.0.0:3000/api/v1'
   },
 
   // sinatra development
   SET_DEV_ENV (state) {
     state.settings.environment = 'development'
     state.settings.debug = true
-    state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
+    state.settings.apiBaseUrl = 'http://0.0.0.0:3000/api/v1'
   },
   
   SET_TEST_ENV (state) {
     state.settings.environment = 'test'
     state.settings.debug = false
-    state.settings.apiBaseUrl = 'http://localhost:3000/api/v1'
+    state.settings.apiBaseUrl = 'http://0.0.0.0:3000/api/v1'
   },
 
   SET_PROD_ENV (state) {
