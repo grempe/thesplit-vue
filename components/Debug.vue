@@ -45,10 +45,6 @@
       <div class="col-md-12">
         <p>state.settings.environment : {{ settings.environment }} </p>
         <p>state.settings.apiBaseUrl : {{ settings.apiBaseUrl }} </p>
-        <button @click='setNpmEnv'>NPM</button>
-        <button @click='setDevEnv'>DEV</button>
-        <button @click='setTestEnv'>TEST</button>
-        <button @click='setProdEnv'>PROD</button>
       </div>
     </div>
 
