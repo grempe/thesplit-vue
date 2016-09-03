@@ -76,14 +76,11 @@
       </div>
       <div class="panel-body">
         <div class="row receipt" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
-          <div class="col-xs-12 col-sm-6 col-md-4">
-            {{ $key }}
+          <div class="col-xs-12 col-sm-6">
+            <samp>{{ $key }}</samp>&nbsp;<a @click="deleteServerSentSecret(secret)"><span class="glyphicon glyphicon-trash" aria-hidden="true" aria-label="delete"></span></a>
           </div>
-          <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="col-xs-12 col-sm-6">
             {{ secret.createdAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.createdAt | moment "from" "now" }}</span>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-4">
-            <a @click="deleteServerSentSecret(secret)">delete</a>
           </div>
         </div>
       </div>

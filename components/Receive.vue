@@ -23,13 +23,11 @@
 <template>
   <div id="receive">
 
-    <h4 v-show="!activeReceivedSecretPresent">Receive a Secret</h4>
-
     <div class="row" v-show="activeReceivedSecretPresent">
       <div class="col-md-12">
         <div class="panel panel-success">
           <div class="panel-heading">
-            <h4 class="panel-title">Decrypted Secret<a class="pull-right" @click="unsetActiveReceivedSecret">&times;</a></h4>
+            <h4 class="panel-title">Decrypted Secret<a class="pull-right" @click="unsetActiveReceivedSecret"><span class="glyphicon glyphicon-remove" aria-hidden="true" aria-label="delete"></span></a></h4>
             <br>
             <p class="text-muted text-small">
               {{ activeReceivedSecretId }}<br>
@@ -47,7 +45,7 @@
     <div class="row" v-show="!activeReceivedSecretPresent">
       <div class="col-md-12">
         <div class="jumbotron">
-          <h3 class="empty-title">No secret selected</h3>
+          <h3 class="empty-title">Receive a Secret</h3>
           <p class="empty-meta" v-show="receivedSecretsPresent" >You've received {{ receivedSecretsCount }} {{receivedSecretsCount | pluralize 'secret'}} before.</p>
           <p class="empty-meta">Care to send a new one?</p>
           <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send a new secret</button>
