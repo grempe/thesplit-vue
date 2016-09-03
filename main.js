@@ -30,6 +30,7 @@ require('bootstrap');
 
 import Vue from 'vue'
 import VueResource from 'vue-resource'
+import VueResourceCaseConverter from 'vue-resource-case-converter'
 import VueRouter from 'vue-router'
 
 import App from './components/App.vue'
@@ -43,7 +44,8 @@ import Debug from './components/Debug.vue'
 Vue.config.debug = process.env.NODE_ENV !== 'production'
 
 Vue.use(VueRouter)
-Vue.use(VueResource);
+Vue.use(VueResource)
+Vue.use(VueResourceCaseConverter)
 Vue.use(require('vue-moment'))
 
 // setting : 'history: false'
