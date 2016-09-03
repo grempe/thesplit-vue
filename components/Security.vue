@@ -45,11 +45,11 @@
               creates a secret, and their chosen recipient, ever has possession of the
               secret key material needed to decrypt or authenticate a secret.</p>
 
-          <p>A secure Random Number Generator (CSPRNG) generates an 8 byte
-              one-time use random key. This key material is then stretched to 64 bytes,
+          <p>A secure Random Number Generator (CSPRNG) generates a 16 byte (128 bit)
+              one-time use random key. This key material is stretched to 64 bytes,
               using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank">Scrypt Key Derivation Function (KDF)</a>.
-              The first 32 Bytes of this stretched key material is used as the symmetric key
-              for an NaCl 'Secret Box', while the second 32 Bytes are used as a BLAKE2s HMAC key to
+              The first 32 bytes of this stretched key material is used as the symmetric key
+              for an NaCl 'Secret Box', while the second 32 bytes are used as a BLAKE2s HMAC key to
               authenticate the entire server payload. The following security libraries are used
               in the client. No crypto libraries are required on the server.
           </p>
@@ -66,7 +66,7 @@
           <h4>Zero-Knowledge Server</h4>
           <p>The most important security principle for the server is that it cannot reveal secrets it
               never had. Even if the server were to be fully compromised and publicly exposed, it can
-              only reveal fully encrypted material, secured with a 32 Byte (256 bit) key, which
+              only reveal fully encrypted material, secured with a 32 byte (256 bit) key, which
               will be of little use to an attacker who might only be able to learn the length of
               the encrypted material.</p>
 

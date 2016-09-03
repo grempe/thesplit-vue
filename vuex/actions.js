@@ -198,7 +198,8 @@ export const encryptActiveSecret = ({ dispatch, state }) => {
   // HMAC keys are derived using scrypt KDF. A Base32 encoded
   // copy of this key will become part of the secret URI for
   // sender and recipient. Base32 being URI and human friendly.
-  let key = nacl.randomBytes(8)
+  // 16 Bytes, 128 bits random key
+  let key = nacl.randomBytes(16)
   let keyB32 = base32.encode(nacl.util.encodeBase64(key))
   
   // Derive NaCl Secret Box Key and HMAC Key with Scrypt
