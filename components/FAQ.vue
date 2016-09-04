@@ -23,8 +23,8 @@
 <template>
   <div id="FAQ">
 
-    <h4>Frequently Asked Questions</h4>
-
+    <h4><span class="fa fa-question-circle-o fa-fw fa-lg"></span>Frequently Asked Questions</h4>
+    <br>
     <div class="row" v-for="faq in frequentlyAskedQuestions | orderBy 'cat'">
       <div class="col-md-12">
         <span class="label label-default">{{ faq.cat }}</span>&nbsp;<strong>{{ faq.q }}</strong>

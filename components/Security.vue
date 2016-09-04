@@ -23,7 +23,7 @@
 <template>
   <div id="security">
 
-    <h4>Security</h4>
+    <h4><span class="fa fa-user-secret fa-fw fa-lg"></span>Security</h4>
     
     <div class="row">
       <div class="col-md-12">

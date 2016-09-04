@@ -23,8 +23,10 @@
 <template>
   <div id="send">
 
-    <h4 v-show="!activeSecretEncrypted">Send a Secret</h4>
+    <h4 v-show="!activeSecretEncrypted"><span class="fa fa-paper-plane fa-fw fa-lg"></span>Send a Secret</h4>
     <h4 v-show="activeSecretEncrypted">Share Encrypted Secret</h4>
+
+    <br>
 
     <div class="row secret-send-input" v-show="!activeSecretEncrypted">
         <div class="col-md-12">
@@ -40,8 +42,8 @@
     <div class="row secret-send-buttons" v-show="!activeSecretEncrypted">
       <div class="col-xs-12">
         <div class="text-right">
-          <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="disableSecretSubmit" data-toggle="tooltip" data-placement="bottom" title="Clear the secret you've entered and don't submit anything">Clear</button>
-          <button class="btn btn-default" v-on:click="encryptActiveSecret" :disabled="disableSecretSubmit" data-toggle="tooltip" data-placement="bottom" title="Encrypt and submit your secret, and display a link you can share">Encrypt + Submit</button>
+          <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="disableSecretSubmit">Clear</button>
+          <button class="btn btn-default" v-on:click="encryptActiveSecret" :disabled="disableSecretSubmit">Encrypt + Submit</button>
         </div>
       </div>
     </div>
@@ -53,7 +55,7 @@
       </div>
 
       <div class="col-md-12 text-center">
-        <p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">dev link</a></p>
+        <p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></p>
         <strong class="text-danger">Save this link <em>now</em>! It will be forever destroyed when you leave this page.</strong>
         <pre class="bg-danger">{{ activeSecretUrl }}</pre>
       </div>
@@ -61,13 +63,13 @@
 
     <div class="row secret-send-link-buttons" v-show="activeSecretEncrypted">
       <div class="col-md-12 text-center">
-        <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext" data-toggle="tooltip" data-placement="bottom" title="Permanently destroy the secret and the private link to it">Destroy Private Link</button>
+        <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext">Destroy Private Link</button>
       </div>
     </div>
 
     <div class="panel panel-default" v-show="sentSecretsPresent" >
       <div class="panel-heading">
-        <h3 class="panel-title">Receipts <a class="pull-right" @click="deleteAllSentSecrets">delete all</a></h3>
+        <h3 class="panel-title">Receipts <a class="pull-right" @click="deleteAllSentSecrets"><span class="fa fa-trash fa-fw"></span>Delete All</a></h3>
         <br>
         <p>Receipts represent secrets previously sent. They cannot be used to decrypt or
           view the contents of a secret. If you change your mind about sharing you
@@ -77,7 +79,7 @@
       <div class="panel-body">
         <div class="row receipt" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
           <div class="col-xs-12 col-sm-6">
-            <samp>{{ $key }}</samp>&nbsp;<a @click="deleteServerSentSecret(secret)"><span class="glyphicon glyphicon-trash" aria-hidden="true" aria-label="delete"></span></a>
+            <a @click="deleteServerSentSecret(secret)" alt="Delete Receipt"><span class="fa fa-trash fa-fw"></span></a><samp>{{ $key }}</samp>
           </div>
           <div class="col-xs-12 col-sm-6">
             {{ secret.createdAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.createdAt | moment "from" "now" }}</span>

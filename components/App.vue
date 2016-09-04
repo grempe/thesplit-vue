@@ -26,7 +26,7 @@
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -36,14 +36,14 @@
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="collapse navbar-collapse" id="navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li><a v-link="{ path: '/send' }">Send</a></li>
-          <li><a v-link="{ path: '/receive' }">Receive</a></li>
-          <li><a v-link="{ path: '/verify' }">Verify</a></li>
-          <li><a v-link="{ path: '/security' }">Security</a></li>
-          <li><a v-link="{ path: '/faq' }">FAQ</a></li>
-          <li v-if="settings.debug"><a v-link="{ path: '/debug' }">Debug</a></li>
+          <li><a v-link="{ path: '/send' }"><span class="fa fa-paper-plane fa-fw fa-lg"></span>Send</a></li>
+          <li><a v-link="{ path: '/receive' }"><span class="fa fa-arrow-down fa-fw fa-lg"></span>Receive</a></li>
+          <!--<li><a v-link="{ path: '/verify' }"><span class="fa fa-bug fa-fw fa-lg"></span>Verify</a></li>-->
+          <li><a v-link="{ path: '/security' }"><span class="fa fa-user-secret fa-fw fa-lg"></span>Security</a></li>
+          <li><a v-link="{ path: '/faq' }"><span class="fa fa-question-circle-o fa-fw fa-lg"></span>FAQ</a></li>
+          <li v-if="settings.debug"><a v-link="{ path: '/debug' }"><span class="fa fa-bug fa-fw fa-lg"></span>Debug</a></li>
         </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

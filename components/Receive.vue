@@ -27,7 +27,7 @@
       <div class="col-md-12">
         <div class="panel panel-success">
           <div class="panel-heading">
-            <h4 class="panel-title">Decrypted Secret<a class="pull-right" @click="unsetActiveReceivedSecret"><span class="glyphicon glyphicon-remove" aria-hidden="true" aria-label="delete"></span></a></h4>
+            <h4 class="panel-title">Decrypted Secret<a class="pull-right" @click="unsetActiveReceivedSecret"><span class="fa fa-times-circle"></span></a></h4>
             <br>
             <p class="text-muted text-small">
               {{ activeReceivedSecretId }}<br>
@@ -45,7 +45,7 @@
     <div class="row" v-show="!activeReceivedSecretPresent">
       <div class="col-md-12">
         <div class="jumbotron">
-          <h3 class="empty-title">Receive a Secret</h3>
+          <h3 class="empty-title"><span class="fa fa-arrow-down fa-fw fa-lg"></span>Receive a Secret</h3>
           <p class="empty-meta" v-show="receivedSecretsPresent" >You've received {{ receivedSecretsCount }} {{receivedSecretsCount | pluralize 'secret'}} before.</p>
           <p class="empty-meta">Care to send a new one?</p>
           <button v-link="{ path: '/e' }" class="empty-action btn btn-primary">Send a new secret</button>
@@ -55,33 +55,25 @@
       </div>
     </div>
 
-    <br>
-    <br>
-
-    <div class="row" v-show="receivedSecretsPresent">
-      <div class="col-md-12">
-        <strong>Received ( <a @click="deleteAllReceivedSecrets">delete all</a> )</strong>
-        <table class="table table-striped table-hover">
-          <caption>
-            These secrets were previously received, decrypted, and stored for your
-            convenience. To protect the sender, and yourself, you should delete any secrets
-            you no longer need access to. These secrets are stored <em>unencrypted</em> in your browser!
-          </caption>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Received At</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-              <tr v-bind:class="{ 'success': this.$route.params.id === secret.id }" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
-                <td><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></td>
-                <td>{{ secret.receivedAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.receivedAt | moment "from" "now" }}</span></td>
-                <td><a @click="deleteReceivedSecret(secret)">delete</a></td>
-              </tr>
-          </tbody>
-        </table>
+    <div class="panel panel-default" v-show="receivedSecretsPresent" >
+      <div class="panel-heading">
+        <h3 class="panel-title">Received <a class="pull-right" @click="deleteAllReceivedSecrets"><span class="fa fa-trash fa-fw"></span>Delete All</a></h3>
+        <br>
+        <p>These secrets were previously received, and stored here for your
+            convenience. To protect the sender, and yourself, from accidental disclosure
+            you should delete, or store securely, any secrets you no longer need.
+            These secrets are stored <em>unencrypted</em> in your browser! All times
+            shown are in UTC.</p>
+      </div>
+      <div class="panel-body">
+        <div class="row secret" v-for="secret in receivedSecrets | orderBy 'receivedAt' -1">
+          <div class="col-xs-12 col-sm-6">
+            <a @click="deleteReceivedSecret(secret)" alt="Delete Secret"><span class="fa fa-trash fa-fw"></span></a><samp><a @click="setActiveReceivedSecret(secret)" v-link="{ name: 'receive-id-key', params: { id: secret.id, key: secret.keyB32 }}" class="btn btn-link">{{ $key }}</a></samp>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            {{ secret.receivedAt | moment "M/D/YYYY H:mm:ss" }} <span class="text-muted"> - {{ secret.receivedAt | moment "from" "now" }}</span>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -23,7 +23,7 @@
 <template>
   <div id="debug">
 
-    <h4>Debug</h4>
+    <h4><span class="fa fa-bug fa-fw fa-lg"></span>Debug</h4>
 
     <div class="row">
       <div class="col-md-12">
