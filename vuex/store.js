@@ -17,6 +17,10 @@ const state = {
 
   // Application wide configuration settings
   settings: {
+    // crude detect if current platform is Mac or iOS
+    platformMac: navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? true : false,
+    platformIos: navigator.platform.match(/(iPhone|iPod|iPad)/i) ? true : false,
+
     // turn off any debug output by default.
     debug: false,
 

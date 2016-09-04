@@ -23,23 +23,23 @@
 <template>
   <div id="send">
 
-    <h4 v-show="!activeSecretEncrypted"><span class="fa fa-paper-plane fa-fw fa-lg"></span>Send a Secret</h4>
-    <h4 v-show="activeSecretEncrypted">Share Encrypted Secret</h4>
+    <div id="secret-send-heading">
+      <h4 v-show="!activeSecretEncrypted"><span class="fa fa-paper-plane fa-fw fa-lg"></span>Send a Secret</h4>
+      <h4 v-show="activeSecretEncrypted">Share Encrypted Secret</h4>
+    </div>
 
-    <br>
-
-    <div class="row secret-send-input" v-show="!activeSecretEncrypted">
-        <div class="col-md-12">
-          <textarea id="inputSecretText" :value="activeSecretPlaintext" @input="updateActiveSecretPlaintext | debounce 250" v-bind:disabled="activeSecretEncrypted" type="text" class="form-control" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
+    <div id="secret-send-input" class="row" v-show="!activeSecretEncrypted">
+      <div class="col-md-12">
+        <textarea id="inputSecretText" :value="activeSecretPlaintext" @input="updateActiveSecretPlaintext | debounce 250" v-bind:disabled="activeSecretEncrypted" type="text" class="form-control" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
         <div class="progress">
           <div class="progress-bar" v-bind:class="{ 'progress-bar-info': secretQuotaPercentDisplayClass === 'info', 'progress-bar-success': secretQuotaPercentDisplayClass === 'success', 'progress-bar-warning': secretQuotaPercentDisplayClass === 'warning', 'progress-bar-danger': secretQuotaPercentDisplayClass === 'danger' }" role="progressbar" :aria-valuenow="secretQuotaPercentNum" aria-valuemin="0" aria-valuemax="100" style="min-width: 2.75em;" v-bind:style="{width: secretQuotaPercentString}">
             {{ secretQuotaPercentString }}
           </div>
         </div>
-        </div>
+      </div>
     </div>
 
-    <div class="row secret-send-buttons" v-show="!activeSecretEncrypted">
+    <div id="secret-send-buttons" class="row" v-show="!activeSecretEncrypted">
       <div class="col-xs-12">
         <div class="text-right">
           <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="disableSecretSubmit">Clear</button>
@@ -48,35 +48,45 @@
       </div>
     </div>
 
-    <div class="row secret-send-link" v-show="activeSecretEncrypted">
-      <div class="col-md-12">
-        <p>This private link contains the identifier and the secret key needed to retrieve and decrypt your shared secret.
-          This secret key is never stored or transmitted except by you. Secrets can only be viewed once and expire in 24 hours.</p>
+    <div id="secret-send-link" class="row" v-show="activeSecretEncrypted">
+      <div id="secret-send-link-text" class="col-md-12">
+        <p>This private link contains the secret ID and key needed to retrieve and decrypt your shared secret.
+          It is never transmitted except by you when you share this link. Secrets can only be viewed once
+          and expire in 24 hours. <span class="text-danger">This link will be destroyed when you leave this
+          page, copy it now.</span></p>
       </div>
 
-      <div class="col-md-12 text-center">
-        <p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></p>
-        <strong class="text-danger">Save this link <em>now</em>! It will be forever destroyed when you leave this page.</strong>
-        <pre class="bg-danger">{{ activeSecretUrl }}</pre>
-      </div>
-    </div>
+      <br>
 
-    <div class="row secret-send-link-buttons" v-show="activeSecretEncrypted">
-      <div class="col-md-12 text-center">
-        <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext">Destroy Private Link</button>
+      <div id="secret-send-link-output" class="col-md-12 text-center">
+        <!--<p><a v-if="debug" v-link="{ name: 'receive-id-key', params: { id: activeSecret.id, key: activeSecret.keyB32 }}">{{ activeSecretUrl }}</a></p>-->
+        <pre id="active-secret-url" class="bg-danger">{{ activeSecretUrl }}</pre>
       </div>
     </div>
 
-    <div class="panel panel-default" v-show="sentSecretsPresent" >
-      <div class="panel-heading">
+    <div id="secret-send-link-buttons" class="row" v-show="activeSecretEncrypted">
+      <div class="col-md-12 text-center">
+        <button class="btn btn-danger" v-on:click="unsetActiveSecret" :disabled="!activeSecretPlaintext"><span class="fa fa-trash fa-fw"></span>Destroy Link</button>
+        <button v-show="!platformIos" class="btn btn-default" data-clipboard-target="#active-secret-url" :disabled="!activeSecretUrl"><span class="fa fa-copy fa-fw"></span>Copy Link</button>
+      </div>
+    </div>
+
+    <div id="secret-send-link-copy-paste" class="row" v-show="activeSecretEncrypted">
+      <div class="col-md-12 text-center">
+        <p id="copy-paste-text"></p>
+      </div>
+    </div>
+
+    <div id="secret-receipts" class="panel panel-default" v-show="sentSecretsPresent" >
+      <div id="secret-receipts-text" class="panel-heading">
         <h3 class="panel-title">Receipts <a class="pull-right" @click="deleteAllSentSecrets"><span class="fa fa-trash fa-fw"></span>Delete All</a></h3>
         <br>
-        <p>Receipts represent secrets previously sent. They cannot be used to decrypt or
-          view the contents of a secret. If you change your mind about sharing you
-          can always delete a secret which hasn't yet expired or been viewed. All times
+        <p>Receipts are a link to secrets previously sent. They can't be used to decrypt or
+          view the contents of a secret. If you change your mind about a secret you shared
+          previously you can delete it if it hasn't expired or been viewed. All times
           shown are in UTC.</p>
       </div>
-      <div class="panel-body">
+      <div id="secret-receipts-output" class="panel-body">
         <div class="row receipt" v-for="secret in sentSecrets | orderBy 'createdAt' -1">
           <div class="col-xs-12 col-sm-6">
             <a @click="deleteServerSentSecret(secret)" alt="Delete Receipt"><span class="fa fa-trash fa-fw"></span></a><samp>{{ $key }}</samp>
@@ -95,6 +105,31 @@
 import numeral from 'numeral'
 import * as actions from '../vuex/actions'
 import * as getters from '../vuex/getters'
+
+// See : https://clipboardjs.com/
+import Clipboard from 'clipboard'
+// link clipboard to all 'btn' class objects
+let clipboard = new Clipboard('.btn');
+
+// handle events on clipboard actions
+// success == selected + copied
+clipboard.on('success', function(e) {
+  if (navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
+    $('#copy-paste-text').html('<span>Link copied! <kbd>&#8984;+V</kbd> to paste</span>')
+  } else {
+    $('#copy-paste-text').html('<span>Link copied! <kbd>Ctrl+V</kbd> to paste</span>')
+  }
+  e.clearSelection()
+})
+
+// error == only selected, not copied
+clipboard.on('error', function(e) {
+  if (navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
+    $('#copy-paste-text').html('<span>Link selected! <kbd>&#8984;+C</kbd> to copy then <kbd>&#8984;+V</kbd> to paste</span>')
+  } else {
+    $('#copy-paste-text').html('<span>Link selected! <kbd>Ctrl+C</kbd> to copy then <kbd>Ctrl+V</kbd> to paste</span>')
+  }
+})
 
 export default {
   data () {
@@ -181,19 +216,31 @@ export default {
     margin-bottom: 0px;
   }
 
-  .secret-send-input {
+  #secret-send-heading {
     margin-bottom: 2em;
   }
 
-  .secret-send-buttons {
+  #secret-send-input {
     margin-bottom: 2em;
   }
 
-  .secret-send-link {
+  #secret-send-buttons {
     margin-bottom: 2em;
   }
 
-  .secret-send-link-buttons {
+  #secret-send-link {
+    margin-bottom: 2em;
+  }
+
+  #secret-send-link-text {
+    margin-bottom: 2em;
+  }
+
+  #secret-send-link-buttons {
+    margin-bottom: 2em;
+  }
+
+  #secret-send-link-copy-paste {
     margin-bottom: 2em;
   }
 

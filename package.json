@@ -17,6 +17,7 @@
     "base32-crockford-browser": "^1.0.0",
     "blake2s-js": "^1.2.0",
     "bootstrap": "^3.3.7",
+    "clipboard": "^1.5.12",
     "jquery": "^3.1.0",
     "numeral": "^1.5.3",
     "scryptsy": "^2.0.0",

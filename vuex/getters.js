@@ -10,6 +10,24 @@ export function alerts (state) {
   return state.alerts
 }
 
+export function platformMac (state) {
+  if (settings.platformMac) {
+    return true
+  }
+}
+
+export function platformIos (state) {
+  if (settings.platformIos) {
+    return true
+  }
+}
+
+export function platformOther (state) {
+  if (!settings.platformIos && !settings.platformMac) {
+    return true
+  }
+}
+
 // RECEIVED SECRETS
 
 export function activeReceivedSecret (state) {
