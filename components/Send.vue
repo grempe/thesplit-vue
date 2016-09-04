@@ -32,7 +32,7 @@
       <div class="col-md-12">
         <textarea id="inputSecretText" :value="activeSecretPlaintext" @input="updateActiveSecretPlaintext | debounce 250" v-bind:disabled="activeSecretEncrypted" type="text" class="form-control" placeholder="We all have secrets. Share yours safely." rows="5" autofocus></textarea>
         <div class="progress">
-          <div class="progress-bar" v-bind:class="{ 'progress-bar-info': secretQuotaPercentDisplayClass === 'info', 'progress-bar-success': secretQuotaPercentDisplayClass === 'success', 'progress-bar-warning': secretQuotaPercentDisplayClass === 'warning', 'progress-bar-danger': secretQuotaPercentDisplayClass === 'danger' }" role="progressbar" :aria-valuenow="secretQuotaPercentNum" aria-valuemin="0" aria-valuemax="100" style="min-width: 0.0em;" v-bind:style="{width: secretQuotaPercentWidthString}">
+          <div class="progress-bar" v-bind:class="{ 'progress-bar-info': secretQuotaPercentDisplayClass === 'info', 'progress-bar-success': secretQuotaPercentDisplayClass === 'success', 'progress-bar-warning': secretQuotaPercentDisplayClass === 'warning', 'progress-bar-danger': secretQuotaPercentDisplayClass === 'danger' }" role="progressbar" :aria-valuenow="secretQuotaPercentNum" aria-valuemin="0" aria-valuemax="100" style="min-width: 2.0em;" v-bind:style="{width: secretQuotaPercentWidthString}">
             {{ secretQuotaPercentString }}
           </div>
         </div>
@@ -179,7 +179,7 @@ export default {
     },
     secretQuotaPercentString: function () {
       if (this.activeSecretPlaintext) {
-        return numeral(this.secretPercentageOfAllowedLength).format('0.0%')
+        return numeral(this.secretPercentageOfAllowedLength).format('0%')
       }
     },
     secretQuotaPercentNum: function () {
