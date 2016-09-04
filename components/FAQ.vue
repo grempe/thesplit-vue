@@ -64,7 +64,7 @@ export default {
         {
           cat: 'security',
           q: "Has the code undergone a third-party security review?",
-          a: "<p>No, the code has not yet been subjected to a rigorous security audit. It has however been circulated and informally reviewed by security experts and the code is open source for anyone to review at any time.</p>"
+          a: "<p>No, the code has not yet been subjected to a professional security audit. It has however been circulated and reviewed by security experts and the code is open source for anyone to review at any time.</p>"
         },
         {
           cat: 'general',
@@ -84,12 +84,12 @@ export default {
         {
           cat: 'general',
           q: "Do secrets expire?",
-          a: "<p>Yes, they encrypted data record currently expires exactly 24 hours after creation. When the file expires it is automatically deleted.</p>"
+          a: "<p>Yes, the encrypted data record currently expires exactly 24 hours after creation. When the file expires it is automatically deleted.</p>"
         },
         {
           cat: 'security',
           q: "What kind of cryptography is used to encrypt my secrets?",
-          a: "<p>All shared secret data is encrypted using the <a href='https://tweetnacl.js.org/#/' target='_blank'>TweetNaCl.js</a> encryption library. More specifically the Secretbox (XSalsa20 stream cipher and Poly1305 one-time authenticator) secret-key authenticated encryption construct is used with a 24 Byte Nonce and a 32 Byte random key which is derived with the scrypt key derivation function. On the server side all data is stored in an instance of the Hashicorp Vault Database, which is an AES encrypted data store protected by a strong access control layer with enforced use-limits, access control lists (ACL's) and Time To Live values (TTL's). This is state of the art security.</p>"
+          a: "<p>After generating a one-time use 16 byte (128 bit) random key, and stretching that key with the scrypt key derivation function, all shared secret data is encrypted using the <a href='https://tweetnacl.js.org/#/' target='_blank'>TweetNaCl.js</a> encryption library. More specifically the Secretbox (XSalsa20 stream cipher and Poly1305 one-time authenticator) secret-key authenticated encryption construct is used with a 24 Byte Nonce and the 32 Byte (256 bit) key which was derived from the random key. On the server side all data is stored in an instance of the Hashicorp Vault Database, which is an AES encrypted data store protected by a strong access control layer with enforced use-limits, access control lists (ACL's), and Time To Live values (TTL's). This is state of the art security.</p>"
         },
         {
           cat: 'security',
@@ -193,7 +193,7 @@ export default {
         },
         {
           cat: 'general',
-          q: "Can I run my own copy of this application for commercial use?",
+          q: "Can I run my own copy of this application within my company for commercial use?",
           a: "<p>Please contact for licensing information for commercial use.</p>"
         },
         {

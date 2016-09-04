@@ -2,7 +2,6 @@ import Vue from 'vue'
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util'
 nacl.util = naclutil
-import * as sha256 from "fast-sha256";
 import BLAKE2s from 'blake2s-js'
 import scrypt from 'scryptsy'
 import base32 from 'base32-crockford-browser'
@@ -102,8 +101,12 @@ function makeAction (type) {
 
 export const getSecret = ({ dispatch, state }, id, keyB32) => {
   // requires id and keyB32 from URI to retrieve a secret
-  if (!state.receivedSecrets[id] && id && keyB32) {
-    Vue.http.get(state.settings.apiBaseUrl + '/secrets/' + id).then((response) => {
+  if (!state.receivedSecrets[id] && id && keyB32) {    
+    let h = new BLAKE2s(32)
+    h.update(nacl.util.decodeUTF8(id))
+    let serverId = h.hexDigest()
+
+    Vue.http.get(state.settings.apiBaseUrl + '/secrets/' + serverId).then((response) => {
       // API returns box, box_nonce, scrypt_salt, created_at, expires_at
       let d = new Date
       let r = response.json().data
@@ -131,16 +134,17 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
       let boxKeyKdfBytes = scryptBytes.slice(0, state.settings.scrypt.keyLenBytes / 2)
       let hmacKeyKdfBytes = scryptBytes.slice(state.settings.scrypt.keyLenBytes / 2, state.settings.scrypt.keyLenBytes)
 
-      // Create the BLAKE2s HMAC used for authenticating the storage ID/HMAC
-      // against the payload actually retrieved
+      // Recreate the BLAKE2s HMAC to authenticate that the payload that was
+      // actually retrieved matches the ID (HMAC) that the data was retrieved
+      // with and stored under.
       let h = new BLAKE2s(state.settings.hmacLengthBytes, hmacKeyKdfBytes)
       h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.scryptSalt))
       h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.boxNonce))
       h.update(nacl.util.decodeUTF8(state.activeReceivedSecret.box))
-      let blake2sHash = h.hexDigest()
+      let newId = h.hexDigest()
 
       // Secure constant-time string comparison
-      if (nacl.verify(nacl.util.decodeUTF8(blake2sHash), nacl.util.decodeUTF8(state.activeReceivedSecret.id))) {
+      if (nacl.verify(nacl.util.decodeUTF8(newId), nacl.util.decodeUTF8(id))) {
         // Payload HMAC is OK, decrypt the secret box contents
         let boxBytes = nacl.util.decodeBase64(state.activeReceivedSecret.box)
         let boxNonceBytes = nacl.util.decodeBase64(state.activeReceivedSecret.boxNonce)
@@ -173,7 +177,12 @@ export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
     dispatch('UNSET_ACTIVE_SECRET')
   }
   dispatch('DELETE_SENT_SECRET', sec.id)
-  Vue.http.delete(state.settings.apiBaseUrl + '/secrets/' + sec.id).then((response) => {
+
+  let h = new BLAKE2s(32)
+  h.update(nacl.util.decodeUTF8(sec.id))
+  let serverId = h.hexDigest()
+
+  Vue.http.delete(state.settings.apiBaseUrl + '/secrets/' + serverId).then((response) => {
     dispatch('ADD_ALERT', 'success', "The local receipt and server secret have been removed.")
   }, (response) => {
     // error callback
@@ -230,9 +239,9 @@ export const encryptActiveSecret = ({ dispatch, state }) => {
   h.update(nacl.util.decodeUTF8(scryptSaltB64))
   h.update(nacl.util.decodeUTF8(boxNonceB64))
   h.update(nacl.util.decodeUTF8(boxB64))
-  let blake2sHash = h.hexDigest()
+  let id = h.hexDigest()
 
-  dispatch('SET_ACTIVE_SECRET_ID', blake2sHash)
+  dispatch('SET_ACTIVE_SECRET_ID', id)
   dispatch('SET_ACTIVE_SECRET_KEY', keyB32)
   dispatch('SET_ACTIVE_SECRET_BOX_NONCE', boxNonceB64)
   dispatch('SET_ACTIVE_SECRET_BOX', boxB64)
@@ -243,9 +252,27 @@ export const encryptActiveSecret = ({ dispatch, state }) => {
 }
 
 export const postActiveSecret = ({ dispatch, state }) => {
+  // Generate a 32 byte (64 char) hexdigest of the client ID.
+  // This hash of the ID is the handle that all data on the
+  // server will be stored and retrieved with. This is done
+  // to make it impossible for an attacker with knowledge of
+  // all ID's stored on the server to reverse the server ID
+  // back into the client ID that is embedded in the URL
+  // used to share the secret. If an attacker were able to
+  // derive the ID used in the URL from what is found on the
+  // server they could do a global search (e.g. all gmail,
+  // all twitter) to find the owner of that unique hash. If
+  // they were able to find the owner of the hash, that would
+  // also likely give them access to the original encryption key
+  // which is usually co-located with the client ID in the
+  // secret URL.
+  let h = new BLAKE2s(32)
+  h.update(nacl.util.decodeUTF8(state.activeSecret.id))
+  let serverId = h.hexDigest()
+  
   // Whitelist to be sure we only send allowed attributes to the server
   let whiteSec = {
-    id: state.activeSecret.id,
+    id: serverId,
     boxNonce: state.activeSecret.boxNonce,
     box: state.activeSecret.box,
     scryptSalt: state.activeSecret.scryptSalt
@@ -255,9 +282,13 @@ export const postActiveSecret = ({ dispatch, state }) => {
   // camelCase will be auto-converted to snake_case for the server
   // on both POST and response.
   Vue.http.post(state.settings.apiBaseUrl + '/secrets', whiteSec).then((response) => {
-    // API returns id, created_at, expires_at
+    // API returns created_at, expires_at
     let newSec = response.json().data
-    
+    // the local client always deals in the client ID
+    // and is not aware of, nor cares about, the
+    // hashed version of this ID used as the server ID.
+    newSec.id = state.activeSecret.id
+
     // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
     newSec.createdAt *= 1000
     newSec.expiresAt *= 1000

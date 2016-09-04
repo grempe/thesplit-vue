@@ -171,33 +171,39 @@
         <div class="col-md-6">
           <h4>Blockchain Anchored</h4>
           <p>Every secret that is shared has a unique ID value which, as is explained in greater detail
-              on this page, ensures that the data is unchanged. We take some additional steps to protect
+              on this page, ensures the integrity of the data. We take some additional steps to protect
               your data and allow for verifiable data integrity by anchoring every secret to a Merkle Tree
               proof, the root of which is anchored to the Bitcoin Blockchain.
           </p>
 
-          <p>When you submit your encrypted secret payload to our servers, we actually store it under
-              a unique ID which is the SHA256 hash of the HMAC ID. This small step is taken to prevent
-              the server from retaining information about the ID that you will use to share your secret.
-              This also prevents an adversary who gains knowledge of the list of secret ID's stored
-              on the server from being able to reverse that ID and perform, for example, a global search
-              of the public Twitter stream or the GMail data store, to identify the sender or
-              recipient of that particular ID. We call this the 'server ID'.</p>
+          <p>Prior to submitting your encrypted secret payload to our servers, a 32 byte BLAKE2s hash of
+              the ID is generated. This is what is provided to the server, and this server ID is what we
+              actually use as the handle to store and retrieve your secret. This seemingly small step
+              is important in that it helps prevent the server from knowing information about the ID
+              embedded in your secret link. This ensures that an adversary who gains knowledge of the
+              list of secret ID's stored on the server cannot reverse that ID and perform
+              a global search of, for example, the public Twitter stream or Gmail, in an
+              attempt to locate the secret link ID and the encryption key that is likely stored
+              alongside it. Of course if that adversary can see a URL being shared for this domain
+              and they are able to keep that for later use once they have a copy of the DB, then
+              all is lost. This could be an argument for stripping out the ID and the key from the
+              secret link and sharing those anonymous hex values over different channels and
+              never mention this service when sharing them.</p>
 
-            <p>Then we hash the 'server ID' one more time with SHA256 and send that value to be stored
+            <p>Finally, the 'server ID' is hashed one more time with SHA256 and that value is stored
                 on the Bitcoin Blockchain using the <a href="https://tierion.com/" target="_blank">Tierion Proof Engine</a>.
-                We then store receipts which contain the Merkle Proof data needed to verify that a secret
-                has in fact been stored on the Blockchain, in a certain OP_RETURN transaction, at a certain provable
-                time. We even collaborated with the Tierion team and wrote the official
-                <a href="https://github.com/grempe/tierion" target="_blank">Tierion Ruby Gem</a> to allow
-                easy submission and verification of anchors.
+                The receipts from this service, which contain the Merkle Proof data needed to verify
+                that a secret has in fact been stored on the Blockchain, in a BTC OP_RETURN transaction,
+                with an associated timestamp for the transaction. We collaborated with the Tierion team and
+                wrote the official <a href="https://github.com/grempe/tierion" target="_blank">Tierion Ruby Gem</a>
+                to allow easy submission and verification of anchors.
             </p>
 
             <p>This may seem extreme, but it allows a sender, and their recipient, to verify with
                 absolute certainty that the data integrity of their shared data is assured and
-                that it can be proven that a secret was sent at a certain time in a way that is
-                absolutely immutable. This technique is also safe in that it is impossible to reveal
-                any information about the original secret by examining the SHA256 hash chain.
+                that it can be proven that a secret was sent at a certain time. This 'notary' is
+                absolutely immutable. This technique is also generally safe in that it is impossible to
+                reveal any information about the original secret by examining the one-way hash chain.  
             </p>
         </div>
     </div>
