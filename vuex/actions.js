@@ -162,11 +162,11 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
 // SENDING SECRETS
 
 export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
-  deleteSentSecret({ dispatch, state }, sec)
-
   let h = new BLAKE2s(32)
   h.update(nacl.util.decodeUTF8(sec.id))
   let serverId = h.hexDigest()
+
+  deleteSentSecret({ dispatch, state }, sec)
 
   Vue.http.delete(state.settings.apiBaseUrl + '/secrets/' + serverId).then((response) => {
     addAlert({ dispatch }, 'success', "The local receipt and server secret have been removed.")
