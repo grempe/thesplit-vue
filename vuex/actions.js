@@ -28,16 +28,15 @@ export function deleteAllAlerts ({ dispatch }) {
 
 export function deleteAllSecrets ({ dispatch }) {
   dispatch('DELETE_ALL_SENT_SECRETS')
-  dispatch('UNSET_ACTIVE_SENT_SECRET')
+  dispatch('UNSET_ACTIVE_SECRET')
   dispatch('DELETE_ALL_RECEIVED_SECRETS')
   dispatch('UNSET_ACTIVE_RECEIVED_SECRET')
 }
 
 // SENT SECRETS
 
-export function saveSentSecret ({ dispatch }, sec) {
+export function saveSentSecret ({ dispatch, state }, sec) {
   dispatch('SAVE_SENT_SECRET', sec)
-  dispatch('SET_ACTIVE_SENT_SECRET', sec)
 }
 
 export function deleteSentSecret ({ dispatch, state }, sec) {
@@ -51,7 +50,7 @@ export function deleteAllSentSecrets ({ dispatch }) {
   dispatch('DELETE_ALL_SENT_SECRETS')
 }
 
-export function setActiveSecret ({ dispatch }, sec) {
+export function setActiveSecret ({ dispatch, state }, sec) {
   dispatch('SET_ACTIVE_SECRET', sec)
 }
 
@@ -173,10 +172,7 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
 // SENDING SECRETS
 
 export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
-  if (state.activeSecret && state.activeSecret.id === sec.id) {
-    dispatch('UNSET_ACTIVE_SECRET')
-  }
-  dispatch('DELETE_SENT_SECRET', sec.id)
+  deleteSentSecret({ dispatch, state }, sec)
 
   let h = new BLAKE2s(32)
   h.update(nacl.util.decodeUTF8(sec.id))
@@ -293,7 +289,7 @@ export const postActiveSecret = ({ dispatch, state }) => {
     newSec.createdAt *= 1000
     newSec.expiresAt *= 1000
 
-    dispatch('SAVE_SENT_SECRET', newSec)
+    saveSentSecret({ dispatch, state }, newSec)
   }, (response) => {
     // error callback
     if (response.data && response.data.message) {
