@@ -153,17 +153,17 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
           dispatch('SET_ACTIVE_RECEIVED_SECRET_PLAINTEXT', nacl.util.encodeUTF8(secretBytes))
           dispatch('SAVE_RECEIVED_SECRET', state.activeReceivedSecret)
         } else {
-          dispatch('ADD_ALERT', 'danger', 'The secret could not be decrypted')
+          addAlert({ dispatch }, 'danger', 'The secret could not be decrypted')          
         }
       } else {
-        dispatch('ADD_ALERT', 'danger', 'The HMAC of the received secret did not match the HMAC ID')
+        addAlert({ dispatch }, 'danger', 'The HMAC of the received secret did not match the HMAC ID')          
       }
     }, (response) => {
       // error callback
       if (response.data && response.data.message) {
-        dispatch('ADD_ALERT', 'danger', response.data.message)
+        addAlert({ dispatch }, 'danger', response.data.message)          
       } else {
-        dispatch('ADD_ALERT', 'danger', 'Server Error')
+        addAlert({ dispatch }, 'danger', 'Server Error')          
       }
     })
   }
@@ -179,17 +179,17 @@ export const deleteServerSentSecret = ({ dispatch, state }, sec) => {
   let serverId = h.hexDigest()
 
   Vue.http.delete(state.settings.apiBaseUrl + '/secrets/' + serverId).then((response) => {
-    dispatch('ADD_ALERT', 'success', "The local receipt and server secret have been removed.")
+    addAlert({ dispatch }, 'success', "The local receipt and server secret have been removed.")
   }, (response) => {
     // error callback
     if (response.data && response.data.message) {
       if (response.data.code === 404) {
-        dispatch('ADD_ALERT', 'info', "The local receipt was deleted, the server secret was already viewed or has expired.")
+        addAlert({ dispatch }, 'info', "The local receipt was deleted, the server secret was already viewed or has expired.")
       } else {
-        dispatch('ADD_ALERT', 'danger', response.data.message)
+        addAlert({ dispatch }, 'danger', response.data.message)
       }
     } else {
-      dispatch('ADD_ALERT', 'danger', 'Server Error')
+      addAlert({ dispatch }, 'danger', 'Server Error')
     }
   })
 }
@@ -293,9 +293,9 @@ export const postActiveSecret = ({ dispatch, state }) => {
   }, (response) => {
     // error callback
     if (response.data && response.data.message) {
-      dispatch('ADD_ALERT', 'danger', response.data.message)
+      addAlert({ dispatch }, 'danger', response.data.message)
     } else {
-      dispatch('ADD_ALERT', 'danger', 'Server Error')
+      addAlert({ dispatch }, 'danger', 'Server Error')
     }
   })
 
