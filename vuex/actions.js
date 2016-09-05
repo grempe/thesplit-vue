@@ -24,15 +24,6 @@ export function deleteAllAlerts ({ dispatch }) {
   dispatch('DELETE_ALL_ALERTS')
 }
 
-// ALL SECRETS
-
-export function deleteAllSecrets ({ dispatch }) {
-  dispatch('DELETE_ALL_SENT_SECRETS')
-  dispatch('UNSET_ACTIVE_SECRET')
-  dispatch('DELETE_ALL_RECEIVED_SECRETS')
-  dispatch('UNSET_ACTIVE_RECEIVED_SECRET')
-}
-
 // SENT SECRETS
 
 export function saveSentSecret ({ dispatch, state }, sec) {
