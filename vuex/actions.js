@@ -106,9 +106,8 @@ export const getSecret = ({ dispatch, state }, id, keyB32) => {
       dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX_NONCE', r.boxNonce)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_BOX', r.box)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_SCRYPT_SALT', r.scryptSalt)
-      // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_CREATED_AT', r.createdAt * 1000)
-      dispatch('SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT', r.expiresAt * 1000)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_CREATED_AT', r.createdAt)
+      dispatch('SET_ACTIVE_RECEIVED_SECRET_EXPIRES_AT', r.expiresAt)
       dispatch('SET_ACTIVE_RECEIVED_SECRET_RECEIVED_AT', d.getTime())
       
       // Derive NaCl Secret Box Key and HMAC Key with Scrypt
@@ -275,11 +274,6 @@ export const postActiveSecret = ({ dispatch, state }) => {
     // and is not aware of, nor cares about, the
     // hashed version of this ID used as the server ID.
     newSec.id = state.activeSecret.id
-
-    // UNIX Timestamp is seconds from Epoch, JS uses milliseconds
-    newSec.createdAt *= 1000
-    newSec.expiresAt *= 1000
-
     saveSentSecret({ dispatch, state }, newSec)
   }, (response) => {
     // error callback
@@ -289,5 +283,4 @@ export const postActiveSecret = ({ dispatch, state }) => {
       addAlert({ dispatch }, 'danger', 'Server Error')
     }
   })
-
 }
