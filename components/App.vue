@@ -66,7 +66,7 @@
       <hr>
       <div class="col-md-12 text-center">
         <p class="text-muted">the end-to-end encrypted, zero-knowledge, auto-expiring, one-time use, blockchain anchored, secret sharing service</p>
-        <p class="text-muted">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank">@grempe</a></p>
+        <p class="text-muted">&copy; 2016 Glenn Rempe - <a href="https://twitter.com/grempe" target="_blank" rel="noopener noreferrer">@grempe</a></p>
     </div>
     
   </div>

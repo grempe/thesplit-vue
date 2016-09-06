@@ -39,15 +39,15 @@
           <h4>End-To-End Encrypted</h4>
           <p>All user content is encrypted locally in the browser before being
               transmitted to the server for sharing. All data is encrypted with
-              <a href="http://tweetnacl.cr.yp.to/index.html" target="_blank">TweetNaCl</a>/
-              <a href="http://nacl.cr.yp.to" target="_blank">NaCl</a> compatible
+              <a href="http://tweetnacl.cr.yp.to/index.html" target="_blank" rel="noopener noreferrer">TweetNaCl</a>/
+              <a href="http://nacl.cr.yp.to" target="_blank" rel="noopener noreferrer">NaCl</a> compatible
               Secret Key Authenticated Encryption (XSalsa20-Poly1305). Only the person who
               creates a secret, and their chosen recipient, ever has possession of the
               secret key material needed to decrypt or authenticate a secret.</p>
 
           <p>A secure Random Number Generator (CSPRNG) generates a 16 byte (128 bit)
               one-time use random key. This key material is stretched to 64 bytes,
-              using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank">Scrypt Key Derivation Function (KDF)</a>.
+              using the <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">Scrypt Key Derivation Function (KDF)</a>.
               The first 32 bytes of this stretched key material is used as the symmetric key
               for an NaCl 'Secret Box', while the second 32 bytes are used as a BLAKE2s HMAC key to
               authenticate the entire server payload. The following security libraries are used
@@ -55,9 +55,9 @@
           </p>
           <p>
             <ul>
-              <li><a href="https://tweetnacl.js.org/#/" target="_blank">TweetNaCl.js</a></li>
-              <li><a href="https://github.com/dchest/blake2s-js" target="_blank">BLAKE2s</a></li>
-              <li><a href="https://github.com/cryptocoinjs/scryptsy" target="_blank">scryptsy</a></li>
+              <li><a href="https://tweetnacl.js.org/#/" target="_blank" rel="noopener noreferrer">TweetNaCl.js</a></li>
+              <li><a href="https://github.com/dchest/blake2s-js" target="_blank" rel="noopener noreferrer">BLAKE2s</a></li>
+              <li><a href="https://github.com/cryptocoinjs/scryptsy" target="_blank" rel="noopener noreferrer">scryptsy</a></li>
             </ul>
           </p>
         </div>
@@ -91,7 +91,7 @@
            </p>
 
            <p>The server component of this application is implemented in Ruby and you can view and audit
-               the <a href="https://github.com/thesplit/thesplit" target="_blank">source code</a>.</p>
+               the <a href="https://github.com/thesplit/thesplit" target="_blank" rel="noopener noreferrer">source code</a>.</p>
         </div>
     </div>
 
@@ -99,7 +99,7 @@
         <div class="col-md-6">
           <h4>Encrypted Vault Database with Auto Expiring Access Tokens</h4>
           <p>All secret data is stored in a strongly encrypted
-              <a href="https://www.hashicorp.com/blog/vault.html" target="_blank">Hashicorp Vault Database</a>,
+              <a href="https://www.hashicorp.com/blog/vault.html" target="_blank" rel="noopener noreferrer">Hashicorp Vault Database</a>,
               providing a strong second layer of encryption that wraps all of the client side encrypted
               secret ciphertext again. The vault is fully encrypted at rest and locks when stopped.</p>
 
@@ -191,11 +191,11 @@
               never mention this service when sharing them.</p>
 
             <p>Finally, the 'server ID' is hashed one more time with SHA256 and that value is stored
-                on the Bitcoin Blockchain using the <a href="https://tierion.com/" target="_blank">Tierion Proof Engine</a>.
+                on the Bitcoin Blockchain using the <a href="https://tierion.com/" target="_blank" rel="noopener noreferrer">Tierion Proof Engine</a>.
                 The receipts from this service, which contain the Merkle Proof data needed to verify
                 that a secret has in fact been stored on the Blockchain, in a BTC OP_RETURN transaction,
                 with an associated timestamp for the transaction. We collaborated with the Tierion team and
-                wrote the official <a href="https://github.com/grempe/tierion" target="_blank">Tierion Ruby Gem</a>
+                wrote the official <a href="https://github.com/grempe/tierion" target="_blank" rel="noopener noreferrer">Tierion Ruby Gem</a>
                 to allow easy submission and verification of anchors.
             </p>
 
@@ -212,20 +212,20 @@
         <div class="col-md-6">
           <h4>HTTPS (TLS) Everywhere</h4>
           <p>This site is protected by a TLS/SSL certificate and has been awarded
-              an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">A+ rating from SSLLABS.com</a>
-              and an <a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank">A rating from securityheaders.io</a>.              
+              an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank" rel="noopener noreferrer">A+ rating from SSLLABS.com</a>
+              and an <a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank" rel="noopener noreferrer">A rating from securityheaders.io</a>.              
           </p>
           <p>HTTP Strict Transport Security
-              (<a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security" target="_blank">HSTS</a>)
+              (<a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security" target="_blank" rel="noopener noreferrer">HSTS</a>)
               is also used to ensure that all browser connections to the site are protected by forcing
               HTTP connections to be redirected to their HTTPS equivalent. The 'thesplit.is' domain has also been
-              added to the <a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">HSTS Pre-Load List</a> and
+              added to the <a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank" rel="noopener noreferrer">HSTS Pre-Load List</a> and
               is currently pending hard-coding into the HSTS lists for Google Chrome and other browsers.</p>
         </div>
 
         <div class="col-md-6">
           <h4>Content Security Policy</h4>
-          <p>The server implements a <a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank">Content Security Policy (CSP)</a>
+          <p>The server implements a <a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank" rel="noopener noreferrer">Content Security Policy (CSP)</a>
           that helps prevent cross-site scripting (XSS), clickjacking and other code injection attacks resulting from execution of
           malicious content in a trusted web page context. This site's CSP prevents the loading of resources (images, CSS, JS, Fonts)
           from other domains.
@@ -236,7 +236,7 @@
     <div class="row">
         <div class="col-md-6">
           <h4>Subresource Integrity (SRI)</h4>
-          <p> <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank">Subresource Integrity</a>
+          <p> <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank" rel="noopener noreferrer">Subresource Integrity</a>
           is a relatively new security feature offered in modern browsers that that enables
           browsers to verify that files they fetch (for example, from a CDN) are delivered
           without unexpected manipulation. It works by allowing you to provide a cryptographic
@@ -244,14 +244,14 @@
           are served from the host server and are protected by SRI. If your browser supports it
           any protected files will refuse to load unless they match the SRI hash embedded in
           the page. This, along with TLS/HSTS helps prevent Man-In-The-Middle (MITM) attacks
-          against the security code required to run this application.            
+          against the security code required to run this application. <a href="https://sritest.io/#report/08c18d48-9d4c-49eb-98e9-27ff9beac81e" target="_blank" rel="noopener noreferrer">sritest.io scan results</a>           
           </p>
         </div>
 
         <div class="col-md-6">
           <h4>Single Page Application</h4>
-          <p>The web client for <a href="https://thesplit.is" target="_blank">thesplit.is</a> is a
-          <a href="http://vuejs.org" target="_blank">Vue.js</a> Javascript single page application which
+          <p>The web client for <a href="https://thesplit.is" target="_blank" rel="noopener noreferrer">thesplit.is</a> is a
+          <a href="http://vuejs.org" target="_blank" rel="noopener noreferrer">Vue.js</a> Javascript single page application which
           communicates with our REST API server over a TLS connection. The number of API calls is kept
           very low and very little information of use to an attacker is sent over the wire. Only timestamps
           and already encrypted material is sent. Most importantly, the encryption key never leaves
@@ -264,8 +264,8 @@
     <div class="row">
         <div class="col-md-6">
           <h4>Open Source</h4>
-          <p>This application is <a href="https://github.com/thesplit" target="_blank">open source</a> under the terms
-          of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License v3</a>.
+          <p>This application is <a href="https://github.com/thesplit" target="_blank" rel="noopener noreferrer">open source</a> under the terms
+          of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU Affero General Public License v3</a>.
           This license requires that all changes, including those to an application accessed
           over the network, be made public under the same license. Most commits to the source
           code repository are signed with the PGP key of the author and can be independantly
@@ -278,22 +278,22 @@
           <h4>Run Your Own</h4>
           <p><em><strong>IMPORTANT Security Note</strong></em> : While you can run your own instance
               you won't enjoy some of the infrastructure features and security protections
-              that <a href="https://thesplit.is" target="_blank">thesplit.is</a> can offer:</p>
+              that <a href="https://thesplit.is" target="_blank" rel="noopener noreferrer">thesplit.is</a> can offer:</p>
               
           <ul>
-            <li><a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank">HTTP Strict Transport Security (HSTS)</a></li>
-            <li><a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">DNSSEC</a></li>
-            <li><a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank">SSL LABS A+ rated TLS</a></li>
-            <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank">Subresource Integrity (SRI)</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank">Content Security Policy (CSP)</a></li>
-            <li><a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank">Security Headers</a></li>
-            <li><a href="https://www.cloudflare.com/" target="_blank">Cloudflare Global CDN</a></li>
+            <li><a href="https://hstspreload.appspot.com/?domain=thesplit.is" target="_blank" rel="noopener noreferrer">HTTP Strict Transport Security (HSTS)</a></li>
+            <li><a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank" rel="noopener noreferrer">DNSSEC</a></li>
+            <li><a href="https://www.ssllabs.com/ssltest/analyze.html?d=thesplit.is&latest" target="_blank" rel="noopener noreferrer">SSL LABS A+ rated TLS</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity" target="_blank" rel="noopener noreferrer">Subresource Integrity (SRI)</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Content_Security_Policy" target="_blank" rel="noopener noreferrer">Content Security Policy (CSP)</a></li>
+            <li><a href="https://securityheaders.io/?q=thesplit.is&followRedirects=on" target="_blank" rel="noopener noreferrer">Security Headers</a></li>
+            <li><a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Global CDN</a></li>
             <li><a href="https://en.wikipedia.org/wiki/IPv6">IPv6 Support</a></li>
           </ul>
 
           <p>You have no reason to trust us yet, and we understand that trust is earned. If you want to use
               this application, but don't yet feel all warm and fuzzy about sending your secrets to
-              <a href="https://thesplit.is" target="_blank">thesplit.is</a>, encrypted or not, you can examine
+              <a href="https://thesplit.is" target="_blank" rel="noopener noreferrer">thesplit.is</a>, encrypted or not, you can examine
               the source code and run your own instance of the application on Heroku, or wherever else you
               choose, under the terms of the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License</a>.
               You'll have to setup and maintain several secure host servers but you are free
@@ -310,7 +310,7 @@
     <div class="row">
         <div class="col-md-6">
           <h4>No Advertising</h4>
-          <p><a href="https://thesplit.is" target="_blank">thesplit.is</a> website displays no advertising. Our initial
+          <p><a href="https://thesplit.is" target="_blank" rel="noopener noreferrer">thesplit.is</a> website displays no advertising. Our initial
           offering is free to use for all and we hope to generate income by providing premium features
           that respect the security and privacy of our users, and by seeking out code licensing opportunities.             
           </p>
@@ -318,7 +318,7 @@
 
         <div class="col-md-6">
           <h4>No Tracking Scripts</h4>
-          <p><a href="https://thesplit.is" target="_blank">thesplit.is</a> does not use any third-party tracking scripts
+          <p><a href="https://thesplit.is" target="_blank" rel="noopener noreferrer">thesplit.is</a> does not use any third-party tracking scripts
           which can compromise your privacy. We do capture some very basic information about site usage,
           which does not rely on personal information sharing, and which is only reported to our own
           servers. We don't share information with any third parties unless required by law and accompanied
@@ -341,8 +341,8 @@
               we hope to move all content hosting there as well which would put the site and its
               content beyond the reach of some of the most repressive regimes in the world.
           </p>
-          <p>The thesplit.is domain has also been <a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank">fully secured with DNSSEC</a>.
-          <a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions" target="_blank">DNSSEC</a>, the DNS Security Extensions,
+          <p>The thesplit.is domain has also been <a href="http://dnsviz.net/d/thesplit.is/dnssec/" target="_blank" rel="noopener noreferrer">fully secured with DNSSEC</a>.
+          <a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions" target="_blank" rel="noopener noreferrer">DNSSEC</a>, the DNS Security Extensions,
           uses cryptographic signatures to provide authentication of DNS data and prevent malicious
           manipulation of DNS results.</p>
         </div>
