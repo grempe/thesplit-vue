@@ -5,8 +5,8 @@ import plugins from './plugins'
 Vue.use(Vuex)
 
 // HTML5 localStorage Keys
-export const SENT_SECRETS_STORAGE_KEY = 'thesplit-sent-secrets'
-export const RECEIVED_SECRETS_STORAGE_KEY = 'thesplit-received-secrets'
+export const SENT_SECRETS_STORAGE_KEY = 'sent-secrets'
+export const RECEIVED_SECRETS_STORAGE_KEY = 'received-secrets'
 
 // Create an object to hold the initial state when
 // the app starts up. Load certain keys from localStorage
